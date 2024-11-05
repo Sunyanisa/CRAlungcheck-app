@@ -1,16 +1,37 @@
 import streamlit as st  # ตรวจสอบให้แน่ใจว่าได้ import streamlit แล้ว
 
+# ฟังก์ชันสำหรับล้างข้อมูลทั้งหมดใน session_state และกลับไปยัง step 1
+def reset_state():
+    for key in list(st.session_state.keys()):
+        del st.session_state[key]
+    st.session_state["step"] = 1  # กลับไปที่ขั้นตอนแรก
+
+# ตรวจสอบว่า session_state มีการกำหนดค่าเริ่มต้นหรือยัง
+if "step" not in st.session_state:
+    st.session_state["step"] = 1  # กำหนดค่าเริ่มต้นที่ step 1
+
+# กำหนดการล้างข้อมูลทั้งหมดเมื่อรีโหลดหน้าเว็บ
+if "reloaded" not in st.session_state:
+    reset_state()
+    st.session_state["reloaded"] = True
+    st.session_state["step"] == 1  # กลับมาขั้นตอนที่ 1
+
 # Initialize session state for navigation
 if "step" not in st.session_state:
+    reset_state()
     st.session_state["step"] = 1
 
-# Function to move to the next step
+# # Function to move to the next step
 def next_step():
     st.session_state["step"] += 1
 
-# Function to go back to the previous step
+#back
 def prev_step():
     st.session_state["step"] -= 1
+
+#if "step" not in st.session_state:
+    #st.session_state["step"] = 1
+
 
 # Step 1 - General Information
 if st.session_state["step"] == 1:
@@ -193,6 +214,14 @@ elif st.session_state["step"] == 5:
     st.subheader("Hello!")  # ชื่อผู้ใช้อาจตั้งค่าได้จากข้อมูลจริง
     st.write("How are you today?")
     
+    # "Next" button to proceed to Step 2
+    if st.button("Next"):
+        next_step()
+    # Button to reset everything and go back to step 1
+    if st.button("Reset"):
+        reset_state()
+
+
     # แสดงสัญลักษณ์ยิ้มขนาดใหญ่
     #st.markdown("<h1 style='text-align: center; color: orange;'>😊</h1>", unsafe_allow_html=True)
 
@@ -206,6 +235,4 @@ elif st.session_state["step"] == 5:
     #st.button("Return to Home", on_click=lambda: st.session_state.update(step=1))
 
     
-
-
 
