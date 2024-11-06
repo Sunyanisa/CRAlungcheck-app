@@ -183,51 +183,46 @@ elif st.session_state["step"] == 3:
         if st.button("Next"):
             next_step()  # ไปยังขั้นตอนถัดไป (Step 4) หากมี
 
-# Step 4 - Health Information
+#step4
 elif st.session_state["step"] == 4:
     st.title("CRA LungCheck")
-    st.write("Please enter your information for pre-screening Restrictive defect")  # ข้อความที่คุณต้องการเพิ่ม
+    st.write("Please enter your information for pre-screening Restrictive defect")
     st.write("**Step 4**")
     st.header("Health Information")
+    
+    # Using st.form to avoid automatic updates on each change
+    with st.form(key="health_info_form"):
+        st.write("***In the past 5 years***")
+        
+        tuberculosis = st.radio("Tuberculosis", ["Yes", "No", "Unsure"], key="tuberculosis_5years")
+        asthma = st.radio("Asthma", ["Yes", "No", "Unsure"], key="asthma_5years")
+        pulmonary_tb = st.radio("Pulmonary TB", ["Yes", "No", "Unsure"], key="pulmonary_5years")
 
-#In the past 5 years
-    st.write("***In the past 5 years***")
-##In the past 5 years Tuberculosis_5years
-# Tuberculosis_5years selection
-    Tuberculosis_5years_options = ["Yes", "No","Unsure"]
-    Tuberculosis_5years = st.radio(" Tuberculosis",Tuberculosis_5years_options, key="Tuberculosis_5years")
-    #Tuberculosis_5years = st.radio("Tuberculosis ", ["Yes", "No","Unsure"], key="Tuberculosis_5years") #Stay different the lines
-##In the past 5 years Asthma_5years
-    Asthma_5years = st.radio("Asthma", Tuberculosis_5years_options , key="Asthma_5years") 
-##In the past 5 years Pulmonary_5years
-    Pulmonary_5years = st.radio("Pulmonary TB", Tuberculosis_5years_options , key="Pulmonary_5years") 
+# Current illness section
+        st.write("***Current Illness***")
+        current_illness = st.radio("Do you have any current illness? (If you choose no, skip the next steo and press Submit 2 times) ", ["Yes", "No"], key="current_illness")
+        if current_illness == "Yes":
+            asthma_current = st.radio("Asthma", ["Yes", "No"], key="asthma_current")
+            emphysema_current = st.radio("Emphysema", ["Yes", "No"], key="emphysema_current")
+            Bronchitis_current = st.radio("Bronchitis", ["Yes","No"], key="Bronchitis_current_illness")
+            Sinusitis_current = st.radio("Sinusitis", ["Yes","No"], key="Sinusitis_current_illness")
+            InjurySurgery_current = st.radio("Injury/Surgery", ["Yes","No"], key="InjurySurgery_current_illness")
+            Allergies_current = st.radio("Allergies", ["Yes","No"], key="Allergies_current_illness")
+            Tuberculosis_current = st.radio("Tuberculosis", ["Yes","No"], key="Tuberculosis_current_illness")
+            Heart_current = st.radio("Heart Disease", ["Yes","No"], key="Heart Disease_current_illness")
+            Pneumonia_current = st.radio("Pneumonia", ["Yes","No"], key="Pneumonia_current_illness")
+            Other_current = st.radio("Other", ["Yes","No"], key="Other_current_illness")
 
-#Current illness
-# Current illness selection
-    Current_illness_options = ["Yes", "No"]
-    status2 = st.radio("***Current_illness***",Current_illness_options, key="Current_illness")
-# Current (only if Yes Current illness)
-    if status2 == "Yes":
-        Asthma_current = st.radio("Asthma", ["Yes","No"], key="asthma_current_illness")
-        Emphysema_current = st.radio("Emphysema", ["Yes","No"], key="Emphysema_current_illness")
-        Bronchitis_current = st.radio("Bronchitis", ["Yes","No"], key="Bronchitis_current_illness")
-        Sinusitis_current = st.radio("Sinusitis", ["Yes","No"], key="Sinusitis_current_illness")
-        InjurySurgery_current = st.radio("Injury/Surgery", ["Yes","No"], key="InjurySurgery_current_illness")
-        Allergies_current = st.radio("Allergies", ["Yes","No"], key="Allergies_current_illness")
-        Tuberculosis_current = st.radio("Tuberculosis", ["Yes","No"], key="Tuberculosis_current_illness")
-        Heart_current = st.radio("Heart Disease", ["Yes","No"], key="Heart Disease_current_illness")
-        Pneumonia_current = st.radio("Pneumonia", ["Yes","No"], key="Pneumonia_current_illness")
-        Other_current = st.radio("Other", ["Yes","No"], key="Other_current_illness")
+        # Submit button inside the form
+        submitted = st.form_submit_button("Submit")
+        if submitted:
+            next_step()  # Move to the next step only after submitting the form
 
- # Navigation buttons
+    # Navigation buttons
     col1, col2 = st.columns(2)
     with col1:
         if st.button("Back"):
             prev_step()
-    with col2:
-        if st.button("Next"):
-            next_step()  # ไปยังขั้นตอนถัดไปประมวล
-
 
 # Step 5 - Predicting Page
 
