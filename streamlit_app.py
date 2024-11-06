@@ -230,19 +230,33 @@ elif st.session_state["step"] == 4:
 
 # Step 5 - Predicting Page
 elif st.session_state["step"] == 5:
+    # ใช้ลิงก์ที่สามารถเข้าถึงรูปภาพได้โดยตรง
+    background_image_url = "https://raw.githubusercontent.com/Sunyanisa/CRAlungcheck-app/ee26ba645bce9083cb32f7470c6436703b0d4c7e/predict_app.png"
+    page_bg_img = f"""
+    <style>
+    body {{
+        background-image: url("{background_image_url}");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }}
+    </style>
+    """
+
+    st.markdown(page_bg_img, unsafe_allow_html=True)
     st.title("CRA LungCheck")
     st.subheader("Hello!")  # ชื่อผู้ใช้อาจตั้งค่าได้จากข้อมูลจริง
     st.write("How are you today?")
-
-    # "Next" button to proceed to Step 2
+    
+    # ปุ่ม "Next" เพื่อไปยังขั้นตอนถัดไป
     if st.button("Next"):
         next_step()
-     # ปุ่ม Reset เพื่อกลับไปยัง Step 1 และล้างข้อมูล
+    
+    # ปุ่ม Reset เพื่อกลับไปยัง Step 1
     if st.button("Reset"):
         reset_state()
-        st.experimental_rerun()  # รีเฟรชหน้าเว็บเพื่อไปยัง Step 1 ใหม่
-    
-   
+        st.experimental_rerun()
+
 
 
     # แสดงสัญลักษณ์ยิ้มขนาดใหญ่
