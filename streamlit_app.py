@@ -224,15 +224,13 @@ elif st.session_state["step"] == 4:
         if st.button("Back"):
             prev_step()
 
-# Step 5 - Predicting Page
-
 
 # Step 5 - Predicting Page
 elif st.session_state["step"] == 5:
     # URL for the background image
     background_image_url = "https://www.dropbox.com/scl/fi/kyd9ngkb88zxc8f7l7uo0/bd.desktop.ana.png?rlkey=7htkzv5akjrfhzrymzq6hbfm3&st=89ktj60z&raw=1"
-    #background_image_url = "https://www.dropbox.com/scl/fi/h0c1dsiybeihhbcxnozlz/bg.ana.cralung.png?rlkey=1pdb2nm19xxdyfw2nz12a60p8&st=e9kv557l&raw=1" #phone
-    # Custom CSS to set the background image
+
+    # Custom CSS to set the background image and style the button
     page_bg_img = f"""
     <style>
     .stApp {{
@@ -241,26 +239,46 @@ elif st.session_state["step"] == 5:
         background-repeat: no-repeat;
         background-attachment: fixed;
     }}
+    .centered-button {{
+        display: flex;
+        justify-content: center;
+        position: fixed;
+        bottom: 40px;
+        width: 100%;
+    }}
+    .next-button {{
+        font-size: 20px;
+        padding: 12px 24px;
+        background-color: #FFFFFF;
+        color: black;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }}
     </style>
     """
-    
-    # Apply the background image styling to the page
     st.markdown(page_bg_img, unsafe_allow_html=True)
-        # "Next" button to proceed to result
-    if st.button("Next to"):
-        next_step()
+
+    # Regular Streamlit button to go to the next step
+    if st.button("Next", key="next_step_5"):
+        next_step()  # Move to Step 6
+        
 
 # Step 6 - Health Information
 elif st.session_state["step"] == 6:
-    st.title("CRA LungCheck")
-    st.write("Hi")  # ข้อความที่คุณต้องการเพิ่ม
-    st.write("Prescreening Result ")
-    st.header(" Description : Based on the pre-screening results, you are at a lower risk for having a Restrictive lung disease")
-    # Add a button to reset and go back to Step 1 or perform other actions
+    background_image_url2 = "https://www.dropbox.com/scl/fi/cttoaenxzcirdah8pnpgr/Normal_result.png?rlkey=m4gxgz7269ssjs5eqqg0zwwrd&st=zj9i4vbb&raw=1"
+
+    # Custom CSS to set the background image and style the button
+    page_bg_img = f"""
+    <style>
+    .stApp {{
+        background-image: url("{background_image_url2}");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }}
+    </style>
+    """  
     if st.button("Return to Home"):
         reset_state()  # This will reset all session states and go back to Step 1
         st.rerun()  # To refresh the page and go back to the initial step
-
-
-
-
