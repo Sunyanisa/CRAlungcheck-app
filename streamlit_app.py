@@ -39,16 +39,36 @@ if st.session_state["step"] == 1:
     st.write("Please enter your information for pre-screening Restrictive defect")  # ข้อความที่คุณต้องการเพิ่ม
     st.write("**Step 1**")
     st.header("General Information")
+##แบบปุ่ม3ปุ่ม มีปุ่มว่าง ถ้าไม่กดเลือกเพศ จะบอกให้ User กด
+        # แสดงปุ่ม radio โดยให้ตัวเลือกแรกเป็นค่าว่าง
+    #gender_options = ["", "Male", "Female"]
+    #gender = st.radio("Gender", gender_options, key="gender_step1")
+    # ตรวจสอบว่าผู้ใช้เลือกเพศหรือยัง
+    #if gender:
+        #st.write(f"Gender selected: {gender}")
+    #else:
+        #st.write("Please select your gender.")
+    # แสดงตัวเลือกเพศโดยมีค่าเริ่มต้นเป็น "Select" (ค่าว่าง)
+##แบบเลือกช่องสี่เหลี่ยม
+    gender_options = ["Select", "Male", "Female"]
+    gender = st.selectbox("Gender", gender_options, key="gender_step1")
 
-    # Gender selection
-    gender = st.radio("Gender", ["Male", "Female"], key="gender_step1")
+    # ตรวจสอบว่าผู้ใช้เลือกเพศหรือยัง
+    if gender != "Select":
+        st.write(f"Gender selected: {gender}")
+    else:
+        st.write("Please select your gender.")
+
+##แบบกดเลือก 2 ปุ่ม
+    #Gender selection
+    #gender = st.radio("Gender", ["Male", "Female"], key="gender_step1")
 
     # Age input
-    age = st.number_input("Age", min_value=0, max_value=120, value=25, key="age_step1")
+    age = st.number_input("Age", min_value=0, max_value=120, value=0, key="age_step1")
 
     # Weight and Height inputs
-    weight = st.number_input("Weight (kg)", min_value=0.0, max_value=300.0, value=70.0, key="weight_step1")
-    height = st.number_input("Height (cm)", min_value=0.0, max_value=250.0, value=170.0, key="height_step1")
+    weight = st.number_input("Weight (kg)", min_value=0.0, max_value=300.0, value=0.0, key="weight_step1")
+    height = st.number_input("Height (cm)", min_value=0.0, max_value=250.0, value=0.0, key="height_step1")
 
     # Educational Level selection
     educational_levels = [
@@ -82,7 +102,7 @@ elif st.session_state["step"] == 2:
 
     # Smoked per day (only if current smoker is Yes)
     if current_smoker == "Yes":
-        smoked_per_day = st.number_input("Smoked per day", min_value=1, max_value=100, value=10, key="smoked_per_day_step2")
+        smoked_per_day = st.number_input("Smoked per day", min_value=1, max_value=100, value=1, key="smoked_per_day_step2")
 
     # Cigarette Type
     cigarette_type = st.radio("Cigarette Type", ["Never smoked", "Filtered", "Non-filtered", "Both"], key="cigarette_type_step2")
@@ -124,9 +144,9 @@ elif st.session_state["step"] == 3:
     # Dust Level (Factory and Department)
     col3, col4 = st.columns(2)
     with col3:
-        dust_level_factory = st.number_input("Dust Level (Fac.)", min_value=0.0, max_value=1000.0, value=50.0, key="dust_level_factory_step3")
+        dust_level_factory = st.number_input("Dust Level (Fac.)", min_value=0.0, max_value=1000.0, value=00.0, key="dust_level_factory_step3")
     with col4:
-        dust_level_department = st.number_input("Dust Level (Dep.)", min_value=0.0, max_value=1000.0, value=50.0, key="dust_level_department_step3")
+        dust_level_department = st.number_input("Dust Level (Dep.)", min_value=0.0, max_value=1000.0, value=00.0, key="dust_level_department_step3")
 
     # Question with Yes/No option
     question = st.radio("Previous Department", ["Yes", "No"], key="hazardous_exposure_step3")
@@ -141,18 +161,18 @@ elif st.session_state["step"] == 3:
     # Additional Working Details
     col7, col8 = st.columns(2)
     with col7:
-        working_hours_per_day = st.number_input("Working hours per day", min_value=0.0, max_value=24.0, value=8.0, key="working_hours_day_step3")
+        working_hours_per_day = st.number_input("Working hours per day", min_value=0.0, max_value=24.0, value=0.0, key="working_hours_day_step3")
     with col8:
-        working_days_per_week = st.number_input("Working days per week", min_value=0, max_value=7, value=5, key="working_days_week_step3")
+        working_days_per_week = st.number_input("Working days per week", min_value=0, max_value=7, value=0, key="working_days_week_step3")
 
     col9, col10 = st.columns(2)
     with col9:
         ot_hours_per_week = st.number_input("OT hours per week", min_value=0.0, max_value=168.0, value=0.0, key="ot_hours_week_step3")
     with col10:
-        break_time_per_day = st.number_input("Break Time hours per day", min_value=0.0, max_value=24.0, value=1.0, key="break_time_day_step3")
+        break_time_per_day = st.number_input("Break Time hours per day", min_value=0.0, max_value=24.0, value=0.0, key="break_time_day_step3")
 
     # Sleep Time per day
-    sleep_time_per_day = st.number_input("Sleep Time hours per day", min_value=0.0, max_value=24.0, value=8.0, key="sleep_time_day_step3")
+    sleep_time_per_day = st.number_input("Sleep Time hours per day", min_value=0.0, max_value=24.0, value=0.0, key="sleep_time_day_step3")
 
     # Navigation buttons
     col1, col2 = st.columns(2)
@@ -213,13 +233,16 @@ elif st.session_state["step"] == 5:
     st.title("CRA LungCheck")
     st.subheader("Hello!")  # ชื่อผู้ใช้อาจตั้งค่าได้จากข้อมูลจริง
     st.write("How are you today?")
-    
+
     # "Next" button to proceed to Step 2
     if st.button("Next"):
         next_step()
-    # Button to reset everything and go back to step 1
+     # ปุ่ม Reset เพื่อกลับไปยัง Step 1 และล้างข้อมูล
     if st.button("Reset"):
         reset_state()
+        st.experimental_rerun()  # รีเฟรชหน้าเว็บเพื่อไปยัง Step 1 ใหม่
+    
+   
 
 
     # แสดงสัญลักษณ์ยิ้มขนาดใหญ่
