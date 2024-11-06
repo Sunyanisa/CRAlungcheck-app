@@ -228,10 +228,10 @@ elif st.session_state["step"] == 4:
         if st.button("Next"):
             next_step()  # ไปยังขั้นตอนถัดไปประมวล
 
-import streamlit as st
+
 
 # Step 5 - Predicting Page
-if st.session_state["step"] == 5:
+elif st.session_state["step"] == 5:
     # URL รูปภาพพื้นหลัง
     background_image_url = "https://www.dropbox.com/scl/fi/h0c1dsiybeihhbcxnozlz/bg.ana.cralung.png?rlkey=1pdb2nm19xxdyfw2nz12a60p8&st=0pwk7rb6&dl=1"
     page_bg_img = f"""
