@@ -229,11 +229,15 @@ elif st.session_state["step"] == 4:
             next_step()  # ไปยังขั้นตอนถัดไปประมวล
 
 
+# Step 5 - Predicting Page
+
 
 # Step 5 - Predicting Page
 elif st.session_state["step"] == 5:
-    # URL รูปภาพพื้นหลัง
-    background_image_url = "https://www.dropbox.com/scl/fi/h0c1dsiybeihhbcxnozlz/bg.ana.cralung.png?rlkey=1pdb2nm19xxdyfw2nz12a60p8&st=0pwk7rb6&dl=1"
+    # URL for the background image
+    background_image_url = "https://www.dropbox.com/scl/fi/kyd9ngkb88zxc8f7l7uo0/bd.desktop.ana.png?rlkey=7htkzv5akjrfhzrymzq6hbfm3&st=89ktj60z&raw=1"
+
+    # Custom CSS to set the background image
     page_bg_img = f"""
     <style>
     .stApp {{
@@ -244,37 +248,51 @@ elif st.session_state["step"] == 5:
     }}
     </style>
     """
-
+    
+    # Apply the background image styling to the page
     st.markdown(page_bg_img, unsafe_allow_html=True)
-    st.title("CRA LungCheck")
-    st.subheader("Hello!")
-    st.write("How are you today?")
+
+    # Add a button to reset and go back to Step 1 or perform other actions
+    if st.button("Return to Home"):
+        reset_state()  # This will reset all session states and go back to Step 1
+        st.rerun()  # To refresh the page and go back to the initial step
+
+
+
+
+# Step 5 - Predicting Page
+#if st.session_state["step"] == 5:
+    # URL รูปภาพพื้นหลัง
+    #background_image_url = "https://www.dropbox.com/scl/fi/kyd9ngkb88zxc8f7l7uo0/bd.desktop.ana.png?rlkey=7htkzv5akjrfhzrymzq6hbfm3&st=8rmyr0kk&dl=0"
+    #page_bg_img = f"""
+    #<style>
+   # .stApp {{
+     #   background-image: url("{background_image_url}");
+     #   background-size: cover;
+     #   background-repeat: no-repeat;
+     #   background-attachment: fixed;
+   #}}
+    #</style>
+   #"""
+
+   # st.markdown(page_bg_img, unsafe_allow_html=True)
+    #st.title("CRA LungCheck")
+    #st.subheader("Hello!")
+    #st.write("How are you today?")
 
     # ปุ่ม "Next" เพื่อไปยังขั้นตอนถัดไป
-    if st.button("Next"):
-        next_step()
+    #if st.button("Next"):
+        #next_step()
     
     # ปุ่ม Reset เพื่อกลับไปยัง Step 1
-    if st.button("Reset"):
-        reset_state()
-        st.experimental_rerun()
+    #if st.button("Reset"):
+        #reset_state()
+    #st.experimental_rerun()
 
 
 
 
 
-
-    # แสดงสัญลักษณ์ยิ้มขนาดใหญ่
-    #st.markdown("<h1 style='text-align: center; color: orange;'>😊</h1>", unsafe_allow_html=True)
-
-    # แสดงข้อความ Predicting...
-    #st.markdown("<p style='text-align: center; color: orange;'>Predicting...</p>", unsafe_allow_html=True)
-
-    # แสดงชื่อระบบที่ด้านล่าง
-    #st.markdown("<h3 style='text-align: center; color: orange;'>CRA LungCheck</h3>", unsafe_allow_html=True)
-
-    # ปุ่มกลับไปยังหน้าแรกหรือทำการประมวลผลใหม่ (ขึ้นอยู่กับการออกแบบของคุณ)
-    #st.button("Return to Home", on_click=lambda: st.session_state.update(step=1))
 
     
 
