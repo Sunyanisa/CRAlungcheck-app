@@ -236,7 +236,7 @@ elif st.session_state["step"] == 4:
 elif st.session_state["step"] == 5:
     # URL for the background image
     background_image_url = "https://www.dropbox.com/scl/fi/kyd9ngkb88zxc8f7l7uo0/bd.desktop.ana.png?rlkey=7htkzv5akjrfhzrymzq6hbfm3&st=89ktj60z&raw=1"
-
+    #background_image_url = "https://www.dropbox.com/scl/fi/h0c1dsiybeihhbcxnozlz/bg.ana.cralung.png?rlkey=1pdb2nm19xxdyfw2nz12a60p8&st=e9kv557l&raw=1" #phone
     # Custom CSS to set the background image
     page_bg_img = f"""
     <style>
@@ -251,7 +251,16 @@ elif st.session_state["step"] == 5:
     
     # Apply the background image styling to the page
     st.markdown(page_bg_img, unsafe_allow_html=True)
+        # "Next" button to proceed to result
+    if st.button("Next to"):
+        next_step()
 
+# Step 6 - Health Information
+elif st.session_state["step"] == 6:
+    st.title("CRA LungCheck")
+    st.write("Hi")  # ข้อความที่คุณต้องการเพิ่ม
+    st.write("Prescreening Result ")
+    st.header(" Description : Based on the pre-screening results, you are at a lower risk for having a Restrictive lung disease")
     # Add a button to reset and go back to Step 1 or perform other actions
     if st.button("Return to Home"):
         reset_state()  # This will reset all session states and go back to Step 1
@@ -259,40 +268,4 @@ elif st.session_state["step"] == 5:
 
 
 
-
-# Step 5 - Predicting Page
-#if st.session_state["step"] == 5:
-    # URL รูปภาพพื้นหลัง
-    #background_image_url = "https://www.dropbox.com/scl/fi/kyd9ngkb88zxc8f7l7uo0/bd.desktop.ana.png?rlkey=7htkzv5akjrfhzrymzq6hbfm3&st=8rmyr0kk&dl=0"
-    #page_bg_img = f"""
-    #<style>
-   # .stApp {{
-     #   background-image: url("{background_image_url}");
-     #   background-size: cover;
-     #   background-repeat: no-repeat;
-     #   background-attachment: fixed;
-   #}}
-    #</style>
-   #"""
-
-   # st.markdown(page_bg_img, unsafe_allow_html=True)
-    #st.title("CRA LungCheck")
-    #st.subheader("Hello!")
-    #st.write("How are you today?")
-
-    # ปุ่ม "Next" เพื่อไปยังขั้นตอนถัดไป
-    #if st.button("Next"):
-        #next_step()
-    
-    # ปุ่ม Reset เพื่อกลับไปยัง Step 1
-    #if st.button("Reset"):
-        #reset_state()
-    #st.experimental_rerun()
-
-
-
-
-
-
-    
 
