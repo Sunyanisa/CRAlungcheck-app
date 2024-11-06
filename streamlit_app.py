@@ -228,13 +228,15 @@ elif st.session_state["step"] == 4:
         if st.button("Next"):
             next_step()  # ไปยังขั้นตอนถัดไปประมวล
 
+import streamlit as st
+
 # Step 5 - Predicting Page
-elif st.session_state["step"] == 5:
-    # ใช้ลิงก์ที่สามารถเข้าถึงรูปภาพได้โดยตรง
-    background_image_url = "https://raw.githubusercontent.com/Sunyanisa/CRAlungcheck-app/ee26ba645bce9083cb32f7470c6436703b0d4c7e/predict_app.png"
+if st.session_state["step"] == 5:
+    # URL รูปภาพพื้นหลัง
+    background_image_url = "https://www.dropbox.com/scl/fi/h0c1dsiybeihhbcxnozlz/bg.ana.cralung.png?rlkey=1pdb2nm19xxdyfw2nz12a60p8&st=0pwk7rb6&dl=1"
     page_bg_img = f"""
     <style>
-    body {{
+    .stApp {{
         background-image: url("{background_image_url}");
         background-size: cover;
         background-repeat: no-repeat;
@@ -245,9 +247,9 @@ elif st.session_state["step"] == 5:
 
     st.markdown(page_bg_img, unsafe_allow_html=True)
     st.title("CRA LungCheck")
-    st.subheader("Hello!")  # ชื่อผู้ใช้อาจตั้งค่าได้จากข้อมูลจริง
+    st.subheader("Hello!")
     st.write("How are you today?")
-    
+
     # ปุ่ม "Next" เพื่อไปยังขั้นตอนถัดไป
     if st.button("Next"):
         next_step()
@@ -256,6 +258,9 @@ elif st.session_state["step"] == 5:
     if st.button("Reset"):
         reset_state()
         st.experimental_rerun()
+
+
+
 
 
 
