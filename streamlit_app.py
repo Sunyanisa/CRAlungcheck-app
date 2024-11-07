@@ -1,4 +1,6 @@
 import streamlit as st  # ตรวจสอบให้แน่ใจว่าได้ import streamlit แล้ว
+# Custom CSS for styling
+
 
 # ฟังก์ชันสำหรับล้างข้อมูลทั้งหมดใน session_state และกลับไปยัง step 1
 def reset_state():
@@ -32,6 +34,54 @@ def prev_step():
 #if "step" not in st.session_state:
     #st.session_state["step"] = 1
 
+page_style = """
+    <style>
+    /* Background color */
+    .stApp {
+        background-color: #fffff;
+    }
+
+    /* Main title styling */
+    h1 {
+        color: #ff7f50;
+        text-align: center;
+        font-size: 36px;
+        font-weight: bold;
+    }
+
+    /* Step header styling */
+    h2 {
+        color: #ff6347;
+        text-align: left;
+        font-size: 28px;
+        font-weight: bold;
+        padding: 10px 0;
+        margin-bottom: 10px;
+    }
+
+    /* Button styling */
+    .stButton button {
+        background-color: #ff7f50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 8px 20px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    .stButton button:hover {
+        background-color: #ff6347;
+    }
+
+    /* Centering buttons for navigation */
+    .centered-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+    }
+    </style>
+"""
+st.markdown(page_style, unsafe_allow_html=True)
 
 # Step 1 - General Information
 if st.session_state["step"] == 1:
