@@ -33,30 +33,48 @@ def prev_step():
 
 #if "step" not in st.session_state:
     #st.session_state["step"] = 1
-
+# Custom CSS with a top banner and white bottom
 page_style = """
     <style>
-    /* Background color */
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap');
+    
+    /* Apply Nunito font to the entire app */
+    * {
+        font-family: 'Nunito', sans-serif;
+    /* Background color and layout adjustments */
     .stApp {
-        background-color: #fffff;
+        background: linear-gradient(to bottom, #ff7f50 100px, white 100px);
+    }
+
+    /* Top banner styling */
+    .top-banner {
+        background-color: #ff7f50;  /* Orange color */
+        height: 20px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
     }
 
     /* Main title styling */
     h1 {
-        color: #ff7f50;
+        color: #ff6347;
         text-align: center;
         font-size: 36px;
         font-weight: bold;
+        padding-top: 20px;  /* Pushes the title below the banner */
     }
-
-    /* Step header styling */
-    h2 {
-        color: #ff6347;
-        text-align: left;
-        font-size: 28px;
-        font-weight: bold;
-        padding: 10px 0;
-        margin-bottom: 10px;
+    
+    /* Centering the subtitle text */
+    .subtitle-text {
+        text-align: center;
+        font-size: 18px;
+        font-weight: normal;
+        margin-top: 10px;
+        color: #333333;
     }
 
     /* Button styling */
@@ -81,13 +99,16 @@ page_style = """
     }
     </style>
 """
+
+# Add the banner as the first element in the app
 st.markdown(page_style, unsafe_allow_html=True)
+#st.markdown('<div class="top-banner">CRA LungCheck</div>', unsafe_allow_html=True)
 
 # Step 1 - General Information
 if st.session_state["step"] == 1:
     st.title("CRA LungCheck")
-    st.write("Please enter your information for pre-screening Restrictive defect")  # ข้อความที่คุณต้องการเพิ่ม
-    st.write("**Step 1**")
+    st.markdown('<div class="subtitle-text">Please enter your information for pre-screening Restrictive defect</div>', unsafe_allow_html=True)
+    st.write("****Step 1****")
     st.header("General Information")
 ##แบบปุ่ม3ปุ่ม มีปุ่มว่าง ถ้าไม่กดเลือกเพศ จะบอกให้ User กด
         # แสดงปุ่ม radio โดยให้ตัวเลือกแรกเป็นค่าว่าง
@@ -143,8 +164,8 @@ if st.session_state["step"] == 1:
 # Step 2 - Risky Behavior
 elif st.session_state["step"] == 2:
     st.title("CRA LungCheck")
-    st.write("Please enter your information for pre-screening Restrictive defect")  # ข้อความที่คุณต้องการเพิ่ม
-    st.write("**Step 2**")
+    st.markdown('<div class="subtitle-text">Please enter your information for pre-screening Restrictive defect</div>', unsafe_allow_html=True)
+    st.write("****Step 2****")
     st.header("Risky Behavior")
 
     # Current smoker
@@ -180,8 +201,8 @@ elif st.session_state["step"] == 2:
 # Step 3 - Working Information
 elif st.session_state["step"] == 3:
     st.title("CRA LungCheck")
-    st.write("Please enter your information for pre-screening Restrictive defect")  # ข้อความที่คุณต้องการเพิ่ม
-    st.write("**Step 3**")
+    st.markdown('<div class="subtitle-text">Please enter your information for pre-screening Restrictive defect</div>', unsafe_allow_html=True)
+    st.write("****Step 3****")
     st.header("Working Information")
 
     # Factory Name and Department
@@ -236,8 +257,8 @@ elif st.session_state["step"] == 3:
 #step4
 elif st.session_state["step"] == 4:
     st.title("CRA LungCheck")
-    st.write("Please enter your information for pre-screening Restrictive defect")
-    st.write("**Step 4**")
+    st.markdown('<div class="subtitle-text">Please enter your information for pre-screening Restrictive defect</div>', unsafe_allow_html=True)
+    st.write("****Step 4****")
     st.header("Health Information")
     
     # Using st.form to avoid automatic updates on each change
@@ -299,11 +320,23 @@ elif st.session_state["step"] == 5:
     .next-button {{
         font-size: 20px;
         padding: 12px 24px;
-        background-color: #FFFFFF;
+        background-color: #ff862f;
         color: black;
         border: none;
         border-radius: 5px;
         cursor: pointer;
+    }}
+        /* Custom CSS for the button */
+    .stButton {{
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 10; /* To ensure the button is above other elements */
+        color: white; /* White text color */
+        border: none; /* Remove border */
+        padding: 10px 20px; /* Button padding */
+        font-size: 16px; /* Font size */
+        border-radius: 5px; /* Rounded corners */
     }}
     </style>
     """
@@ -317,18 +350,35 @@ elif st.session_state["step"] == 5:
 # Step 6 - Health Information
 elif st.session_state["step"] == 6:
     background_image_url2 = "https://www.dropbox.com/scl/fi/cttoaenxzcirdah8pnpgr/Normal_result.png?rlkey=m4gxgz7269ssjs5eqqg0zwwrd&st=zj9i4vbb&raw=1"
-
-    # Custom CSS to set the background image and style the button
+    
+    # Custom CSS for the background image with controlled height
     page_bg_img = f"""
     <style>
     .stApp {{
         background-image: url("{background_image_url2}");
-        background-size: cover;
+        background-size: auto 100%; /* กำหนดความสูงที่ 50% ของหน้าจอ */
         background-repeat: no-repeat;
+        background-position: center; /* จัดตำแหน่งให้อยู่ที่ด้านบนและกึ่งกลางของหน้าจอ */
         background-attachment: fixed;
     }}
+    /* Custom CSS for the button */
+    .stButton {{
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 10; /* To ensure the button is above other elements */
+        color: white; /* White text color */
+        border: none; /* Remove border */
+        padding: 10px 20px; /* Button padding */
+        font-size: 16px; /* Font size */
+        border-radius: 5px; /* Rounded corners */
+    }}
+
     </style>
-    """  
+    """
+
+    st.markdown(page_bg_img, unsafe_allow_html=True)
+
     if st.button("Return to Home"):
         reset_state()  # This will reset all session states and go back to Step 1
         st.rerun()  # To refresh the page and go back to the initial step
