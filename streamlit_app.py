@@ -181,12 +181,12 @@ elif st.session_state["step"] == 2:
     lung_inhale = st.radio("Lung Inhale Smoking", ["Never smoked", "Inhaled deeply", "Not inhaled deeply", "Sometimes inhaled deeply"], key="lung_inhale_step2")
 
     # Alcohol section (only show if user selects "No" for Smoking)
-    if current_smoker == "No":
-        alcohol = st.radio("Alcohol", ["Never drank before", "Used to drink but quit", "Still drinking"], key="alcohol_step2")
+    #if current_smoker == "No":
+    alcohol = st.radio("Alcohol", ["Never drank before", "Used to drink but quit", "Still drinking"], key="alcohol_step2")
 
         # Drinking Frequency (only if still drinking)
-        if alcohol == "Still drinking":
-            drinking_frequency = st.radio("Drinking Frequency", ["Never drank", "Drink a little", "Once a week", "2-3 times a week", "4 times or more per week"], key="drinking_frequency_step2")
+    if alcohol == "Still drinking":
+        drinking_frequency = st.radio("Drinking Frequency", ["Never drank", "Drink a little", "Once a week", "2-3 times a week", "4 times or more per week"], key="drinking_frequency_step2")
 
     # Navigation buttons
     col1, col2 = st.columns(2)
