@@ -170,8 +170,7 @@ elif st.session_state["step"] == 2:
 
     # Current smoker
     current_smoker = st.radio("Current smoker", ["Yes", "No"], key="current_smoker_step2")
-
-    # Smoked per day (only if current smoker is Yes)
+      # Smoked per day (only if current smoker is Yes)
     if current_smoker == "Yes":
         smoked_per_day = st.number_input("Smoked per day", min_value=1, max_value=100, value=1, key="smoked_per_day_step2")
 
@@ -181,12 +180,13 @@ elif st.session_state["step"] == 2:
     # Lung Inhale Smoking
     lung_inhale = st.radio("Lung Inhale Smoking", ["Never smoked", "Inhaled deeply", "Not inhaled deeply", "Sometimes inhaled deeply"], key="lung_inhale_step2")
 
-    # Alcohol
-    alcohol = st.radio("Alcohol", ["Never drank before", "Used to drink but quit", "Still drinking"], key="alcohol_step2")
+    # Alcohol section (only show if user selects "No" for Smoking)
+    if current_smoker == "No":
+        alcohol = st.radio("Alcohol", ["Never drank before", "Used to drink but quit", "Still drinking"], key="alcohol_step2")
 
-    # Drinking Frequency (only if still drinking)
-    if alcohol == "Still drinking":
-        drinking_frequency = st.radio("Drinking Frequency", ["Never drank", "Drink a little", "Once a week", "2-3 times a week", "4 times or more per week"], key="drinking_frequency_step2")
+        # Drinking Frequency (only if still drinking)
+        if alcohol == "Still drinking":
+            drinking_frequency = st.radio("Drinking Frequency", ["Never drank", "Drink a little", "Once a week", "2-3 times a week", "4 times or more per week"], key="drinking_frequency_step2")
 
     # Navigation buttons
     col1, col2 = st.columns(2)
@@ -194,8 +194,13 @@ elif st.session_state["step"] == 2:
         if st.button("Back"):
             prev_step()
     with col2:
-        if st.button("Next"):
-            next_step()  # ไปยังขั้นตอนถัดไป (Step 3) 
+        # Enable "Next" only when alcohol information is filled if "No" is selected for smoking
+        if current_smoker == "No" and alcohol is not None:  # Alcohol section filled
+            if st.button("Next"):
+                next_step()  # Proceed to the next step (Step 3)
+        elif current_smoker == "Yes" or (current_smoker == "No" and alcohol is None):  # If smoking "Yes" or alcohol is not filled
+            if st.button("Next"):
+                st.warning("Please provide your alcohol consumption information before proceeding.")
     
     
 # Step 3 - Working Information
@@ -264,7 +269,6 @@ elif st.session_state["step"] == 4:
     # Using st.form to avoid automatic updates on each change
     with st.form(key="health_info_form"):
         st.write("***In the past 5 years***")
-        
         tuberculosis = st.radio("Tuberculosis", ["Yes", "No", "Unsure"], key="tuberculosis_5years")
         asthma = st.radio("Asthma", ["Yes", "No", "Unsure"], key="asthma_5years")
         pulmonary_tb = st.radio("Pulmonary TB", ["Yes", "No", "Unsure"], key="pulmonary_5years")
