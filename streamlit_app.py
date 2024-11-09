@@ -172,7 +172,7 @@ elif st.session_state["step"] == 2:
     st.header("Risky Behavior")
 
     # Current smoker (required)
-    current_smoker = st.radio("Current smoker", ["Please choose", "Yes", "No"], key="current_smoker_step2", index=0)
+    current_smoker = st.radio("**Current smoker**", ["Please choose", "Yes", "No"], key="current_smoker_step2", index=0)
 
     # Display fields based on user selections
     if current_smoker == "Yes":
@@ -185,7 +185,7 @@ elif st.session_state["step"] == 2:
     lung_inhale = st.radio("Lung Inhale Smoking", ["Please choose", "Never smoked", "Inhaled deeply", "Not inhaled deeply", "Sometimes inhaled deeply"], key="lung_inhale_step2", index=0)
 
     # Alcohol section (required)
-    alcohol = st.radio("Alcohol", ["Please choose", "Never drank before", "Used to drink but quit", "Still drinking"], key="alcohol_step2", index=0)
+    alcohol = st.radio("**Alcohol**", ["Please choose", "Never drank before", "Used to drink but quit", "Still drinking"], key="alcohol_step2", index=0)
 
     # Drinking Frequency (only if still drinking)
     if alcohol == "Still drinking":
@@ -206,7 +206,7 @@ elif st.session_state["step"] == 2:
         prev_step()
     
 
-    
+ 
 # Step 3 - Working Information
 elif st.session_state["step"] == 3:
     st.title("CRA LungCheck")
@@ -224,12 +224,12 @@ elif st.session_state["step"] == 3:
     # Dust Level (Factory and Department)
     col3, col4 = st.columns(2)
     with col3:
-        dust_level_factory = st.number_input("Dust Level (Fac.)", min_value=0.0, max_value=1000.0, value=00.0, key="dust_level_factory_step3")
+        dust_level_factory = st.number_input("Dust Level (Fac.)", min_value=0.0, max_value=1000.0, value=0.0, key="dust_level_factory_step3")
     with col4:
-        dust_level_department = st.number_input("Dust Level (Dep.)", min_value=0.0, max_value=1000.0, value=00.0, key="dust_level_department_step3")
+        dust_level_department = st.number_input("Dust Level (Dep.)", min_value=0.0, max_value=1000.0, value=0.0, key="dust_level_department_step3")
 
     # Question with Yes/No option
-    question = st.radio("Previous Department", ["Yes", "No"], key="hazardous_exposure_step3")
+    question = st.radio("Previous Department", ["Please choose", "Yes", "No"], key="hazardous_exposure_step3", index=0)
 
     # Duration Working (Year and Month)
     col5, col6 = st.columns(2)
@@ -254,14 +254,24 @@ elif st.session_state["step"] == 3:
     # Sleep Time per day
     sleep_time_per_day = st.number_input("Sleep Time hours per day", min_value=0.0, max_value=24.0, value=0.0, key="sleep_time_day_step3")
 
-    # Navigation buttons
+    # Navigation buttons with validation
     col1, col2 = st.columns(2)
     with col1:
         if st.button("Back"):
             prev_step()
     with col2:
-        if st.button("Next"):
-            next_step()  # ไปยังขั้นตอนถัดไป (Step 4) หากมี
+        # Validate required fields before allowing navigation
+        if (factory_name and department and question != "Please choose" and 
+            dust_level_factory >= 0 and dust_level_department >= 0 and
+            working_years >= 0 and working_months >= 0 and
+            working_hours_per_day >= 0 and working_days_per_week > 0 and
+            ot_hours_per_week >= 0 and break_time_per_day >= 0 and 
+            sleep_time_per_day >= 0):
+            if st.button("Next"):
+                next_step()
+        else:
+            st.warning("Please fill in all required fields before proceeding.")
+
 
 #step4
 elif st.session_state["step"] == 4:
