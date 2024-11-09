@@ -154,12 +154,17 @@ if st.session_state["step"] == 1:
     education = st.selectbox("Educational Level", educational_levels, key="education_step1")
 
     # Status selection
-    status_options = ["Single", "Married", "Divorced", "Separated", "Widowed"]
-    status = st.radio("Status", status_options, key="status_step1")
+    status_options = ["Please choose","Single", "Married", "Divorced", "Separated", "Widowed"]
+    status = st.radio("Status", status_options, key="status_step1",index=0)
 
-    # "Next" button to proceed to Step 2
+     # Validation check before proceeding to Step 2
     if st.button("Next"):
-        next_step()
+        # Check if any of the required fields are missing
+        if gender == "Select" or age == 0 or weight == 0.0 or height == 0.0 or education == "" or status == "Please choose":
+            st.warning("Please fill out all the fields before proceeding.")
+        else:
+            # Proceed to Step 2 if all fields are completed
+            next_step()
 
 
 
@@ -188,8 +193,8 @@ elif st.session_state["step"] == 2:
     alcohol = st.radio("**Alcohol**", ["Please choose", "Never drank before", "Used to drink but quit", "Still drinking"], key="alcohol_step2", index=0)
 
     # Drinking Frequency (only if still drinking)
-    if alcohol == "Still drinking":
-        drinking_frequency = st.radio("Drinking Frequency", ["Please choose", "Never drank", "Drink a little", "Once a week", "2-3 times a week", "4 times or more per week"], key="drinking_frequency_step2", index=0)
+    if alcohol == "Still drinking" or alcohol == "Used to drink but quit":
+        drinking_frequency = st.radio("Drinking Frequency", ["Please choose","Drink a little", "Once a week", "2-3 times a week", "4 times or more per week"], key="drinking_frequency_step2", index=0)
 
     # Check if all required fields are filled
     if (current_smoker != "Please choose" and cigarette_type != "Please choose" and 
@@ -289,7 +294,7 @@ elif st.session_state["step"] == 4:
 
 # Current illness section
         st.write("***Current Illness***")
-        current_illness = st.radio("Do you have any current illness? (If you choose no, skip the next steo and press Submit 2 times) ", ["Yes", "No"], key="current_illness")
+        current_illness = st.radio("Do you have any current illness? ""**(If not, please select No for the next question.)**", ["Yes", "No"], key="current_illness")
         if current_illness == "Yes":
             asthma_current = st.radio("Asthma", ["Yes", "No"], key="asthma_current")
             emphysema_current = st.radio("Emphysema", ["Yes", "No"], key="emphysema_current")
@@ -301,6 +306,7 @@ elif st.session_state["step"] == 4:
             Heart_current = st.radio("Heart Disease", ["Yes","No"], key="Heart Disease_current_illness")
             Pneumonia_current = st.radio("Pneumonia", ["Yes","No"], key="Pneumonia_current_illness")
             Other_current = st.radio("Other", ["Yes","No"], key="Other_current_illness")
+
 
         # Submit button inside the form
         submitted = st.form_submit_button("Submit")
