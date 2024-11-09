@@ -168,9 +168,10 @@ elif st.session_state["step"] == 2:
     st.write("****Step 2****")
     st.header("Risky Behavior")
 
-    # Current smoker
+# Current smoker
     current_smoker = st.radio("Current smoker", ["Yes", "No"], key="current_smoker_step2")
-      # Smoked per day (only if current smoker is Yes)
+
+    # Smoked per day (only if current smoker is Yes)
     if current_smoker == "Yes":
         smoked_per_day = st.number_input("Smoked per day", min_value=1, max_value=100, value=1, key="smoked_per_day_step2")
 
@@ -180,11 +181,10 @@ elif st.session_state["step"] == 2:
     # Lung Inhale Smoking
     lung_inhale = st.radio("Lung Inhale Smoking", ["Never smoked", "Inhaled deeply", "Not inhaled deeply", "Sometimes inhaled deeply"], key="lung_inhale_step2")
 
-    # Alcohol section (only show if user selects "No" for Smoking)
-    #if current_smoker == "No":
+    # Alcohol section
     alcohol = st.radio("Alcohol", ["Never drank before", "Used to drink but quit", "Still drinking"], key="alcohol_step2")
 
-        # Drinking Frequency (only if still drinking)
+    # Drinking Frequency (only if still drinking)
     if alcohol == "Still drinking":
         drinking_frequency = st.radio("Drinking Frequency", ["Never drank", "Drink a little", "Once a week", "2-3 times a week", "4 times or more per week"], key="drinking_frequency_step2")
 
@@ -194,14 +194,12 @@ elif st.session_state["step"] == 2:
         if st.button("Back"):
             prev_step()
     with col2:
-        # Enable "Next" only when alcohol information is filled if "No" is selected for smoking
-        if current_smoker == "No" and alcohol is not None:  # Alcohol section filled
-            if st.button("Next"):
+        # Enable "Next" only when conditions are met
+        if st.button("Next"):
+            if alcohol == "Still drinking" and "drinking_frequency" not in st.session_state:
+                st.warning("Please provide your drinking frequency information before proceeding.")
+            else:
                 next_step()  # Proceed to the next step (Step 3)
-        elif current_smoker == "Yes" or (current_smoker == "No" and alcohol is None):  # If smoking "Yes" or alcohol is not filled
-            if st.button("Next"):
-                st.warning("Please provide your alcohol consumption information before proceeding.")
-    
     
 # Step 3 - Working Information
 elif st.session_state["step"] == 3:
