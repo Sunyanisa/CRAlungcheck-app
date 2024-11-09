@@ -196,19 +196,22 @@ elif st.session_state["step"] == 2:
     if alcohol == "Still drinking" or alcohol == "Used to drink but quit":
         drinking_frequency = st.radio("Drinking Frequency", ["Please choose","Drink a little", "Once a week", "2-3 times a week", "4 times or more per week"], key="drinking_frequency_step2", index=0)
 
+    col1, col2 = st.columns(2)
+    with col2:
     # Check if all required fields are filled
-    if (current_smoker != "Please choose" and cigarette_type != "Please choose" and 
-        lung_inhale != "Please choose" and alcohol != "Please choose" and 
-        (alcohol != "Still drinking" or (alcohol == "Still drinking" and drinking_frequency != "Please choose"))):
-        # Display Next button only when all fields are completed
-        if st.button("Next"):
-            next_step()
-    else:
-        st.warning("Please fill in all required information before proceeding.")
-
+        if (current_smoker != "Please choose" and cigarette_type != "Please choose" and 
+            lung_inhale != "Please choose" and alcohol != "Please choose" and 
+            (alcohol != "Still drinking" or (alcohol == "Still drinking" and drinking_frequency != "Please choose"))):
+            # Display Next button only when all fields are completed
+            if st.button("Next"):
+                next_step()
+        else:
+            st.warning("Please fill in all required information before proceeding.")
+    with col1:
     # Back button
-    if st.button("Back"):
-        prev_step()
+        if st.button("Back"):
+            prev_step()
+    
     
 
  
