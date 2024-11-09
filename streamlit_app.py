@@ -161,45 +161,51 @@ if st.session_state["step"] == 1:
     if st.button("Next"):
         next_step()
 
+
+
 # Step 2 - Risky Behavior
+# ตัวอย่างการตั้งค่าให้มี "None" หรือ "Please choose" เป็นค่าเริ่มต้นในทุกขั้นตอนของ step2
 elif st.session_state["step"] == 2:
     st.title("CRA LungCheck")
     st.markdown('<div class="subtitle-text">Please enter your information for pre-screening Restrictive defect</div>', unsafe_allow_html=True)
     st.write("****Step 2****")
     st.header("Risky Behavior")
 
-# Current smoker
-    current_smoker = st.radio("Current smoker", ["Yes", "No"], key="current_smoker_step2")
+    # Current smoker (required)
+    current_smoker = st.radio("Current smoker", ["Please choose", "Yes", "No"], key="current_smoker_step2", index=0)
 
-    # Smoked per day (only if current smoker is Yes)
+    # Display fields based on user selections
     if current_smoker == "Yes":
         smoked_per_day = st.number_input("Smoked per day", min_value=1, max_value=100, value=1, key="smoked_per_day_step2")
 
-    # Cigarette Type
-    cigarette_type = st.radio("Cigarette Type", ["Never smoked", "Filtered", "Non-filtered", "Both"], key="cigarette_type_step2")
+    # Cigarette Type (required)
+    cigarette_type = st.radio("Cigarette Type", ["Please choose", "Never smoked", "Filtered", "Non-filtered", "Both"], key="cigarette_type_step2", index=0)
 
-    # Lung Inhale Smoking
-    lung_inhale = st.radio("Lung Inhale Smoking", ["Never smoked", "Inhaled deeply", "Not inhaled deeply", "Sometimes inhaled deeply"], key="lung_inhale_step2")
+    # Lung Inhale Smoking (required)
+    lung_inhale = st.radio("Lung Inhale Smoking", ["Please choose", "Never smoked", "Inhaled deeply", "Not inhaled deeply", "Sometimes inhaled deeply"], key="lung_inhale_step2", index=0)
 
-    # Alcohol section
-    alcohol = st.radio("Alcohol", ["Never drank before", "Used to drink but quit", "Still drinking"], key="alcohol_step2")
+    # Alcohol section (required)
+    alcohol = st.radio("Alcohol", ["Please choose", "Never drank before", "Used to drink but quit", "Still drinking"], key="alcohol_step2", index=0)
 
     # Drinking Frequency (only if still drinking)
     if alcohol == "Still drinking":
-        drinking_frequency = st.radio("Drinking Frequency", ["Never drank", "Drink a little", "Once a week", "2-3 times a week", "4 times or more per week"], key="drinking_frequency_step2")
+        drinking_frequency = st.radio("Drinking Frequency", ["Please choose", "Never drank", "Drink a little", "Once a week", "2-3 times a week", "4 times or more per week"], key="drinking_frequency_step2", index=0)
 
-    # Navigation buttons
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.button("Back"):
-            prev_step()
-    with col2:
-        # Enable "Next" only when conditions are met
+    # Check if all required fields are filled
+    if (current_smoker != "Please choose" and cigarette_type != "Please choose" and 
+        lung_inhale != "Please choose" and alcohol != "Please choose" and 
+        (alcohol != "Still drinking" or (alcohol == "Still drinking" and drinking_frequency != "Please choose"))):
+        # Display Next button only when all fields are completed
         if st.button("Next"):
-            if alcohol == "Still drinking" and "drinking_frequency" not in st.session_state:
-                st.warning("Please provide your drinking frequency information before proceeding.")
-            else:
-                next_step()  # Proceed to the next step (Step 3)
+            next_step()
+    else:
+        st.warning("Please fill in all required information before proceeding.")
+
+    # Back button
+    if st.button("Back"):
+        prev_step()
+    
+
     
 # Step 3 - Working Information
 elif st.session_state["step"] == 3:
