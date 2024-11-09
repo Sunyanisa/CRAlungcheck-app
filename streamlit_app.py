@@ -323,7 +323,7 @@ elif st.session_state["step"] == 4:
 # Step 5 - Predicting Page
 elif st.session_state["step"] == 5:
     # URL for the background image
-    background_image_url = "https://www.dropbox.com/scl/fi/kyd9ngkb88zxc8f7l7uo0/bd.desktop.ana.png?rlkey=7htkzv5akjrfhzrymzq6hbfm3&st=89ktj60z&raw=1"
+    background_image_url = "https://www.dropbox.com/scl/fi/kyd9ngkb88zxc8f7l7uo0/bd.desktop.ana.png?rlkey=7htkzv5akjrfhzrymzq6hbfm3&st=hp5fumdw&raw=1"
 
     # Custom CSS to set the background image and style the button
     page_bg_img = f"""
@@ -373,7 +373,9 @@ elif st.session_state["step"] == 5:
 
 # Step 6 - Health Information
 elif st.session_state["step"] == 6:
-    background_image_url2 = "https://www.dropbox.com/scl/fi/cttoaenxzcirdah8pnpgr/Normal_result.png?rlkey=m4gxgz7269ssjs5eqqg0zwwrd&st=zj9i4vbb&raw=1"
+    #background_image_url2 = "https://www.dropbox.com/scl/fi/095e2ows327zrg428uahs/7.png?rlkey=rexc956iik73poob05n4qs3cj&st=m9r2jwv7&raw=1" #Normal
+    #background_image_url2 = "https://www.dropbox.com/scl/fi/wyvwga0ifnogjyk8ggiuh/8.png?rlkey=bzu5m78965d1mpyz4we3v1qzl&st=ryo081o2&&raw=1" #mild
+    background_image_url2 = "https://www.dropbox.com/scl/fi/sa78kd0w9f6c6pl74f6iz/9.png?rlkey=qpbeshe91qnr4e39sxark6cb8&st=ggjg3uhm&raw=1" #High
     
     # Custom CSS for the background image with controlled height
     page_bg_img = f"""
