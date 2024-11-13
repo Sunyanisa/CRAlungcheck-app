@@ -32,8 +32,7 @@ def next_step():
 def prev_step():
     st.session_state["step"] -= 1
 
-#if "step" not in st.session_state:
-    #st.session_state["step"] = 1
+
 # Custom CSS for styling
 page_style = """
     <style>
@@ -74,7 +73,7 @@ page_style = """
     /* Centering the subtitle text */
     .subtitle-text {
         text-align: center;
-        font-size: 16px;
+        font-size: 14px;
         font-weight: normal;
         margin-top: 10px;
         color: #333333;
@@ -87,7 +86,7 @@ page_style = """
         border: none;
         border-radius: 5px;
         padding: 8px 20px;
-        font-size: 16px;
+        font-size: 14px;
         cursor: pointer;
     }
     .stButton button:hover {
@@ -335,7 +334,7 @@ elif st.session_state["step"] == 4:
 elif st.session_state["step"] == 5:
     import time
     # Background video setup
-    background_video_url = "https://www.dropbox.com/scl/fi/dzxtr5hucba891bysghcn/CRALungCheck_analysis.mp4?rlkey=p6u1mzytur5ljuo9lstk94m4m&dl=1"
+    background_video_url = "https://www.dropbox.com/scl/fi/dzxtr5hucba891bysghcn/CRALungCheck_analysis.mp4?rlkey=p6u1mzytur5ljuo9lstk94m4m&raw=1"
 
     page_bg_video = f"""
     <style>
@@ -363,8 +362,8 @@ elif st.session_state["step"] == 5:
 
     # Timer for waiting before moving to the next step
     st.write("Please wait... Redirecting to the next page in 5 seconds.")
-
-    # Initialize session state timer
+    # Timer for waiting before moving to the next step
+        # Initialize session state timer
     if "start_time" not in st.session_state:
         st.session_state["start_time"] = time.time()
 
@@ -374,48 +373,13 @@ elif st.session_state["step"] == 5:
     # Automatically move to the next step after 5 seconds
     if elapsed_time > 5:
         st.session_state["step"] = 6  # Move to the next step
-        st.experimental_rerun()  # Rerun the page to reflect the change
-    else:
-        # Display remaining time
-        st.write(f"Redirecting in {int(5 - elapsed_time)} seconds...")
-
-
+        st.query_params.clear()
 
 # Step 6 - Health Information
 elif st.session_state["step"] == 6:
-    # Custom JavaScript for detecting device type
-    detect_device_type = """
-        <script>
-        function detectDeviceType() {
-            let deviceType = (window.innerWidth <= 768) ? "mobile" : "desktop";
-            var data = {'device_type': deviceType};
-            // Send the detected device type back to Streamlit
-            fetch('/_stcore/streamlit/acceptMessage', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            });
-        }
-        window.onload = detectDeviceType;
-        window.onresize = detectDeviceType;
-        </script>
-    """
-
-    # Add JavaScript detection logic to the page
-    st.markdown(detect_device_type, unsafe_allow_html=True)
-
-    # Default device type if it is not set
-    device_type = st.session_state.get("device_type", "desktop")
-
-    # Select background image based on device type
-    if device_type == "mobile":
-        background_image_url2 = "https://www.dropbox.com/scl/fi/u5hpnakxokiz74hwk5sje/Normal_phone.png?rlkey=115rowkzjrx01zalvx7lu3wwg&st=2mck304a&raw=1"  # Mobile
-    else:
-        background_image_url2 = "https://www.dropbox.com/scl/fi/z46r68ij0pqaldp0ba0vk/Normal_computer.png?rlkey=a4kqijjsw8vgb50na3mo1mkds&st=tdl43df9&raw=1"  # Desktop
-
+    background_image_url2 = "https://www.dropbox.com/scl/fi/rs6obkteqnfe0akdofvy6/Normal_phone.png?rlkey=pxzr8vjioak895uuirtxl3miy&st=p71q44ce&raw=1"  # Mobile
     # Apply background image
+        # Apply background image
     page_bg_img = f"""
         <style>
         .stApp {{
@@ -448,8 +412,8 @@ elif st.session_state["step"] == 6:
     """
     st.markdown(page_bg_img, unsafe_allow_html=True)
 
-    # Navigation button to reset state (centered at the bottom)
+        # Navigation button to reset state (centered at the bottom)
     if st.button("Return to Home"):
         for key in list(st.session_state.keys()):
             del st.session_state[key]
-        st.experimental_rerun()
+        st.query_params.clear()
