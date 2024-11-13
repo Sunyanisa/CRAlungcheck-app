@@ -362,7 +362,7 @@ elif st.session_state["step"] == 5:
     st.markdown(page_bg_video, unsafe_allow_html=True)
 
     # Timer for waiting before moving to the next step
-    st.write("Please wait... Redirecting to the next page in 10 seconds.")
+    st.write("Please wait... Redirecting to the next page in 5 seconds.")
 
     # Initialize session state timer
     if "start_time" not in st.session_state:
@@ -372,46 +372,48 @@ elif st.session_state["step"] == 5:
     elapsed_time = time.time() - st.session_state["start_time"]
 
     # Automatically move to the next step after 5 seconds
-    if elapsed_time > 1:
+    if elapsed_time > 5:
         st.session_state["step"] = 6  # Move to the next step
         st.experimental_rerun()  # Rerun the page to reflect the change
     else:
         # Display remaining time
-        st.write(f"Redirecting in {int(10 - elapsed_time)} seconds...")
+        st.write(f"Redirecting in {int(5 - elapsed_time)} seconds...")
 
 
 
 # Step 6 - Health Information
 elif st.session_state["step"] == 6:
-    import streamlit as st
-    import streamlit as st
-
     # Custom JavaScript for detecting device type
     detect_device_type = """
         <script>
         function detectDeviceType() {
             let deviceType = (window.innerWidth <= 768) ? "mobile" : "desktop";
-            // Communicate this to Streamlit (without visible input)
-            window.parent.postMessage({deviceType: deviceType}, '*');
+            var data = {'device_type': deviceType};
+            // Send the detected device type back to Streamlit
+            fetch('/_stcore/streamlit/acceptMessage', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
         }
         window.onload = detectDeviceType;
         window.onresize = detectDeviceType;
-    </script>
+        </script>
     """
 
     # Add JavaScript detection logic to the page
     st.markdown(detect_device_type, unsafe_allow_html=True)
 
-    # Listening for messages from the JavaScript
-    device_type_placeholder = st.empty()  # This placeholder can be used to display data if needed but is empty for now
-    if "device_type" not in st.session_state:
-        st.session_state["device_type"] = "desktop"  # Default value
+    # Default device type if it is not set
+    device_type = st.session_state.get("device_type", "desktop")
 
-    # Apply a background image based on detected device type
-    if st.session_state["device_type"] == "mobile":
-        background_image_url2 = "https://www.dropbox.com/scl/fi/u5hpnakxokiz74hwk5sje/Normal_phone.png?rlkey=115rowkzjrx01zalvx7lu3wwg&st=2mck304a&raw=1"
+    # Select background image based on device type
+    if device_type == "mobile":
+        background_image_url2 = "https://www.dropbox.com/scl/fi/u5hpnakxokiz74hwk5sje/Normal_phone.png?rlkey=115rowkzjrx01zalvx7lu3wwg&st=2mck304a&raw=1"  # Mobile
     else:
-        background_image_url2 = "https://www.dropbox.com/scl/fi/z46r68ij0pqaldp0ba0vk/Normal_computer.png?rlkey=a4kqijjsw8vgb50na3mo1mkds&st=tdl43df9&raw=1"
+        background_image_url2 = "https://www.dropbox.com/scl/fi/z46r68ij0pqaldp0ba0vk/Normal_computer.png?rlkey=a4kqijjsw8vgb50na3mo1mkds&st=tdl43df9&raw=1"  # Desktop
 
     # Apply background image
     page_bg_img = f"""
@@ -442,18 +444,12 @@ elif st.session_state["step"] == 6:
             font-size: 16px; /* Font size */
             border-radius: 5px; /* Rounded corners */
         }}
-        
         </style>
     """
     st.markdown(page_bg_img, unsafe_allow_html=True)
 
     # Navigation button to reset state (centered at the bottom)
-    button_container = st.container()
-    with button_container:
-        st.markdown('<div class="return-button">', unsafe_allow_html=True)
-        if st.button("Return to Home"):
-            for key in list(st.session_state.keys()):
-                del st.session_state[key]
-            st.session_state["reloaded"] = True
-            st.query_params.clear() # Refresh page
-        st.markdown('</div>', unsafe_allow_html=True)
+    if st.button("Return to Home"):
+        for key in list(st.session_state.keys()):
+            del st.session_state[key]
+        st.experimental_rerun()
