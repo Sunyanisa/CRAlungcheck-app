@@ -1,5 +1,6 @@
 import streamlit as st  # ตรวจสอบให้แน่ใจว่าได้ import streamlit แล้ว
 # Custom CSS for styling
+import time
 
 
 # ฟังก์ชันสำหรับล้างข้อมูลทั้งหมดใน session_state และกลับไปยัง step 1
@@ -33,7 +34,7 @@ def prev_step():
 
 #if "step" not in st.session_state:
     #st.session_state["step"] = 1
-# Custom CSS with a top banner and white bottom
+# Custom CSS for styling
 page_style = """
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap');
@@ -41,11 +42,13 @@ page_style = """
     /* Apply Nunito font to the entire app */
     * {
         font-family: 'Nunito', sans-serif;
+    }
+    
     /* Background color and layout adjustments */
     .stApp {
         background: linear-gradient(to bottom, #ff7f50 100px, white 100px);
     }
-
+    
     /* Top banner styling */
     .top-banner {
         background-color: #ff7f50;  /* Orange color */
@@ -63,7 +66,7 @@ page_style = """
     h1 {
         color: #ff6347;
         text-align: center;
-        font-size: 36px;
+        font-size: 34px;
         font-weight: bold;
         padding-top: 20px;  /* Pushes the title below the banner */
     }
@@ -71,7 +74,7 @@ page_style = """
     /* Centering the subtitle text */
     .subtitle-text {
         text-align: center;
-        font-size: 18px;
+        font-size: 16px;
         font-weight: normal;
         margin-top: 10px;
         color: #333333;
@@ -100,8 +103,14 @@ page_style = """
     </style>
 """
 
-# Add the banner as the first element in the app
+# Apply the CSS
 st.markdown(page_style, unsafe_allow_html=True)
+
+# Your app logic goes here...
+
+# Rest of your Streamlit code including steps
+
+
 #st.markdown('<div class="top-banner">CRA LungCheck</div>', unsafe_allow_html=True)
 
 # Step 1 - General Information
@@ -322,92 +331,129 @@ elif st.session_state["step"] == 4:
         if st.button("Back"):
             prev_step()
 
-
-# Step 5 - Predicting Page
+#step5 analysis in progress
 elif st.session_state["step"] == 5:
-    # URL for the background image
-    background_image_url = "https://www.dropbox.com/scl/fi/kyd9ngkb88zxc8f7l7uo0/bd.desktop.ana.png?rlkey=7htkzv5akjrfhzrymzq6hbfm3&st=hp5fumdw&raw=1"
+    import time
+    # Background video setup
+    background_video_url = "https://www.dropbox.com/scl/fi/dzxtr5hucba891bysghcn/CRALungCheck_analysis.mp4?rlkey=p6u1mzytur5ljuo9lstk94m4m&dl=1"
 
-    # Custom CSS to set the background image and style the button
-    page_bg_img = f"""
+    page_bg_video = f"""
     <style>
     .stApp {{
-        background-image: url("{background_image_url}");
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
+        position: relative;
+        overflow: hidden;
     }}
-    .centered-button {{
-        display: flex;
-        justify-content: center;
+    .background-video {{
         position: fixed;
-        bottom: 40px;
+        right: 0;
+        bottom: 0;
         width: 100%;
-    }}
-    .next-button {{
-        font-size: 20px;
-        padding: 12px 24px;
-        background-color: #ff862f;
-        color: black;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }}
-        /* Custom CSS for the button */
-    .stButton {{
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 10; /* To ensure the button is above other elements */
-        color: white; /* White text color */
-        border: none; /* Remove border */
-        padding: 10px 20px; /* Button padding */
-        font-size: 16px; /* Font size */
-        border-radius: 5px; /* Rounded corners */
+        height: 100%;
+        object-fit: cover;
+        z-index: -1;
     }}
     </style>
+    <video autoplay muted loop class="background-video">
+        <source src="{background_video_url}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
     """
-    st.markdown(page_bg_img, unsafe_allow_html=True)
 
-    # Regular Streamlit button to go to the next step
-    if st.button("Next", key="next_step_5"):
-        next_step()  # Move to Step 6
-        
+    st.markdown(page_bg_video, unsafe_allow_html=True)
+
+    # Timer for waiting before moving to the next step
+    st.write("Please wait... Redirecting to the next page in 10 seconds.")
+
+    # Initialize session state timer
+    if "start_time" not in st.session_state:
+        st.session_state["start_time"] = time.time()
+
+    # Calculate elapsed time
+    elapsed_time = time.time() - st.session_state["start_time"]
+
+    # Automatically move to the next step after 5 seconds
+    if elapsed_time > 1:
+        st.session_state["step"] = 6  # Move to the next step
+        st.experimental_rerun()  # Rerun the page to reflect the change
+    else:
+        # Display remaining time
+        st.write(f"Redirecting in {int(10 - elapsed_time)} seconds...")
+
+
 
 # Step 6 - Health Information
 elif st.session_state["step"] == 6:
-    #background_image_url2 = "https://www.dropbox.com/scl/fi/095e2ows327zrg428uahs/7.png?rlkey=rexc956iik73poob05n4qs3cj&st=m9r2jwv7&raw=1" #Normal
-    #background_image_url2 = "https://www.dropbox.com/scl/fi/wyvwga0ifnogjyk8ggiuh/8.png?rlkey=bzu5m78965d1mpyz4we3v1qzl&st=ryo081o2&&raw=1" #mild
-    background_image_url2 = "https://www.dropbox.com/scl/fi/sa78kd0w9f6c6pl74f6iz/9.png?rlkey=qpbeshe91qnr4e39sxark6cb8&st=ggjg3uhm&raw=1" #High
-    
-    # Custom CSS for the background image with controlled height
-    page_bg_img = f"""
-    <style>
-    .stApp {{
-        background-image: url("{background_image_url2}");
-        background-size: auto 100%; /* กำหนดความสูงที่ 50% ของหน้าจอ */
-        background-repeat: no-repeat;
-        background-position: center; /* จัดตำแหน่งให้อยู่ที่ด้านบนและกึ่งกลางของหน้าจอ */
-        background-attachment: fixed;
-    }}
-    /* Custom CSS for the button */
-    .stButton {{
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 10; /* To ensure the button is above other elements */
-        color: white; /* White text color */
-        border: none; /* Remove border */
-        padding: 10px 20px; /* Button padding */
-        font-size: 16px; /* Font size */
-        border-radius: 5px; /* Rounded corners */
-    }}
+    import streamlit as st
+    import streamlit as st
 
-    </style>
+    # Custom JavaScript for detecting device type
+    detect_device_type = """
+        <script>
+        function detectDeviceType() {
+            let deviceType = (window.innerWidth <= 768) ? "mobile" : "desktop";
+            // Communicate this to Streamlit (without visible input)
+            window.parent.postMessage({deviceType: deviceType}, '*');
+        }
+        window.onload = detectDeviceType;
+        window.onresize = detectDeviceType;
+    </script>
     """
 
+    # Add JavaScript detection logic to the page
+    st.markdown(detect_device_type, unsafe_allow_html=True)
+
+    # Listening for messages from the JavaScript
+    device_type_placeholder = st.empty()  # This placeholder can be used to display data if needed but is empty for now
+    if "device_type" not in st.session_state:
+        st.session_state["device_type"] = "desktop"  # Default value
+
+    # Apply a background image based on detected device type
+    if st.session_state["device_type"] == "mobile":
+        background_image_url2 = "https://www.dropbox.com/scl/fi/u5hpnakxokiz74hwk5sje/Normal_phone.png?rlkey=115rowkzjrx01zalvx7lu3wwg&st=2mck304a&raw=1"
+    else:
+        background_image_url2 = "https://www.dropbox.com/scl/fi/z46r68ij0pqaldp0ba0vk/Normal_computer.png?rlkey=a4kqijjsw8vgb50na3mo1mkds&st=tdl43df9&raw=1"
+
+    # Apply background image
+    page_bg_img = f"""
+        <style>
+        .stApp {{
+            background-image: url("{background_image_url2}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
+        }}
+        .return-button {{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+        }}
+        .stButton {{
+            position: fixed;
+            bottom: 6px;
+            right: 20px;
+            z-index: 10; /* To ensure the button is above other elements */
+            color: white; /* White text color */
+            border: none; /* Remove border */
+            padding: 10px 10px; /* Button padding */
+            font-size: 16px; /* Font size */
+            border-radius: 5px; /* Rounded corners */
+        }}
+        
+        </style>
+    """
     st.markdown(page_bg_img, unsafe_allow_html=True)
 
-    if st.button("Return to Home"):
-        reset_state()  # This will reset all session states and go back to Step 1
-        st.rerun()  # To refresh the page and go back to the initial step
+    # Navigation button to reset state (centered at the bottom)
+    button_container = st.container()
+    with button_container:
+        st.markdown('<div class="return-button">', unsafe_allow_html=True)
+        if st.button("Return to Home"):
+            for key in list(st.session_state.keys()):
+                del st.session_state[key]
+            st.session_state["reloaded"] = True
+            st.query_params.clear() # Refresh page
+        st.markdown('</div>', unsafe_allow_html=True)
