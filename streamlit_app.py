@@ -102,12 +102,8 @@ page_style = """
     </style>
 """
 
-# Apply the CSS
-st.markdown(page_style, unsafe_allow_html=True)
+# Apply the CSSst.markdown(page_style, unsafe_allow_html=True)
 
-# Your app logic goes here...
-
-# Rest of your Streamlit code including steps
 
 
 #st.markdown('<div class="top-banner">CRA LungCheck</div>', unsafe_allow_html=True)
@@ -330,9 +326,10 @@ elif st.session_state["step"] == 4:
         if st.button("Back"):
             prev_step()
 
-#step5 analysis in progress
+# Step 5 - Analysis in progress
 elif st.session_state["step"] == 5:
     import time
+    import random  # Import random module
     # Background video setup
     background_video_url = "https://www.dropbox.com/scl/fi/dzxtr5hucba891bysghcn/CRALungCheck_analysis.mp4?rlkey=p6u1mzytur5ljuo9lstk94m4m&raw=1"
 
@@ -360,26 +357,44 @@ elif st.session_state["step"] == 5:
 
     st.markdown(page_bg_video, unsafe_allow_html=True)
 
-    # Timer for waiting before moving to the next step
-    st.write("Please wait... Redirecting to the next page in 5 seconds.")
-    # Timer for waiting before moving to the next step
-        # Initialize session state timer
+    # Initialize session state timer
     if "start_time" not in st.session_state:
         st.session_state["start_time"] = time.time()
+        # Generate a random value and store it
+        st.session_state["random_value"] = random.randint(0, 2)
 
     # Calculate elapsed time
     elapsed_time = time.time() - st.session_state["start_time"]
 
+    # Display a progress bar or message
+    st.write("Please wait... Redirecting to the next page in 5 seconds.")
+    st.progress(min(int(elapsed_time / 5 * 100), 100))
+
     # Automatically move to the next step after 5 seconds
     if elapsed_time > 5:
         st.session_state["step"] = 6  # Move to the next step
-        st.query_params.clear()
+        st.session_state.pop("start_time")  # Reset the timer
+        st.rerun()  # Force the app to rerun
+    else:
+        time.sleep(0.1)  # Short sleep to prevent rapid looping
+        st.rerun()  # Force the app to rerun
 
-# Step 6 - Health Information
+# Step 6 - Display Image Based on Random Value
 elif st.session_state["step"] == 6:
-    background_image_url2 = "https://www.dropbox.com/scl/fi/rs6obkteqnfe0akdofvy6/Normal_phone.png?rlkey=pxzr8vjioak895uuirtxl3miy&st=p71q44ce&raw=1"  # Mobile
+    # Retrieve the random value
+    random_value = st.session_state.get("random_value", 0)  # Default to 0 if not found
+
+    # Define image URLs based on the random value
+    image_urls = {
+        0: "https://www.dropbox.com/scl/fi/pomdtvnlzsuacmzmce75m/Normal.png?rlkey=5cqznzleogpusgc30lyp6qdmc&st=ghxcowil&raw=1",
+        1: "https://www.dropbox.com/scl/fi/3keh11prpokpytv9s1a06/Mild.png?rlkey=qxnlunz5yc2h01miwieq0wgro&st=5755o5l2&raw=1",
+        2: "https://www.dropbox.com/scl/fi/g18t6ujd2sbv63rqn3xz0/High.png?rlkey=4l8118z19hqo6wvyl95uyqtc0&st=yjbld74w&raw=1",
+    }
+
+    # Get the background image URL based on the random value
+    background_image_url2 = image_urls.get(random_value, image_urls[0])
+
     # Apply background image
-        # Apply background image
     page_bg_img = f"""
         <style>
         .stApp {{
@@ -412,8 +427,8 @@ elif st.session_state["step"] == 6:
     """
     st.markdown(page_bg_img, unsafe_allow_html=True)
 
-        # Navigation button to reset state (centered at the bottom)
+    # Navigation button to reset state (centered at the bottom)
     if st.button("Return to Home"):
         for key in list(st.session_state.keys()):
             del st.session_state[key]
-        st.query_params.clear()
+        st.experimental_set_query_params()  # Clear query params
