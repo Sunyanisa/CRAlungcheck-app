@@ -101,12 +101,8 @@ page_style = """
     }
     </style>
 """
-
-# Apply the CSSst.markdown(page_style, unsafe_allow_html=True)
-
-
-
-#st.markdown('<div class="top-banner">CRA LungCheck</div>', unsafe_allow_html=True)
+"""
+st.markdown(page_style, unsafe_allow_html=True)
 
 # Step 1 - General Information
 if st.session_state["step"] == 1:
