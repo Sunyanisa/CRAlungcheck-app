@@ -329,7 +329,7 @@ elif st.session_state["step"] == 5:
     import time
     import random  # Import random module
     # Background video setup
-    background_video_url = "https://www.dropbox.com/scl/fi/dzxtr5hucba891bysghcn/CRALungCheck_analysis.mp4?rlkey=p6u1mzytur5ljuo9lstk94m4m&raw=1"
+    background_video_url = "https://www.dropbox.com/scl/fi/64srq2nf8kx9pajncsj6s/CRA-LUNGCHECK.mp4?rlkey=5r792fexbzhr4s8nj16qe94t9&st=n0q49dq6&raw=1"
 
     page_bg_video = f"""
     <style>
