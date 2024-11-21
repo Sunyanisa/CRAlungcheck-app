@@ -1,7 +1,7 @@
 import streamlit as st  # ตรวจสอบให้แน่ใจว่าได้ import streamlit แล้ว
 # Custom CSS for styling
 import time
-
+import requests
 
 # ฟังก์ชันสำหรับล้างข้อมูลทั้งหมดใน session_state และกลับไปยัง step 1
 def reset_state():
@@ -224,19 +224,32 @@ elif st.session_state["step"] == 3:
     st.write("****Step 3****")
     st.header("Working Information")
 
+    # Fetch data from the API
+    try:
+        response = requests.get("https://cra-lungcheck-backend.vercel.app/data")
+        response.raise_for_status()
+        data = response.json()  # Parse the JSON response
+        
+        # Get the latest PM2.5 value
+        latest_pm25 = data[0]["pm25"] if data else None
+    except Exception as e:
+        st.error(f"Failed to fetch dust level data: {e}")
+        latest_pm25 = None
+
     # Factory Name and Department
     col1, col2 = st.columns(2)
     with col1:
-        factory_name = st.text_input("Factory Name", key="factory_name_step3")
+        factory_name = st.selectbox(
+            "Factory Name",
+            ["Please choose", "Factory A", "Factory B", "Factory C", "Factory D", "Factory E", "Factory F"],  # Replace with actual factory names
+            key="factory_name_step3"
+        )
     with col2:
-        department = st.text_input("Department", key="department_step3")
-
-    # Dust Level (Factory and Department)
-    col3, col4 = st.columns(2)
-    with col3:
-        dust_level_factory = st.number_input("Dust Level (Fac.)", min_value=0.0, max_value=1000.0, value=0.0, key="dust_level_factory_step3")
-    with col4:
-        dust_level_department = st.number_input("Dust Level (Dep.)", min_value=0.0, max_value=1000.0, value=0.0, key="dust_level_department_step3")
+        # Autofill the Dust Level field with the latest PM2.5 value
+        if latest_pm25 is not None:
+            st.text_input("Dust Level (Fac.)", value=latest_pm25, disabled=True, key="dust_level_factory_step3")
+        else:
+            st.warning("No dust level data available. Please check the API connection.")
 
     # Question with Yes/No option
     question = st.radio("Previous Department", ["Please choose", "Yes", "No"], key="hazardous_exposure_step3", index=0)
@@ -271,8 +284,7 @@ elif st.session_state["step"] == 3:
             prev_step()
     with col2:
         # Validate required fields before allowing navigation
-        if (factory_name and department and question != "Please choose" and 
-            dust_level_factory >= 0 and dust_level_department >= 0 and
+        if (factory_name != "Please choose" and latest_pm25 is not None and question != "Please choose" and 
             working_years >= 0 and working_months >= 0 and
             working_hours_per_day >= 0 and working_days_per_week > 0 and
             ot_hours_per_week >= 0 and break_time_per_day >= 0 and 
@@ -281,7 +293,6 @@ elif st.session_state["step"] == 3:
                 next_step()
         else:
             st.warning("Please fill in all required fields before proceeding.")
-
 
 #step4
 elif st.session_state["step"] == 4:
