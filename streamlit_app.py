@@ -1,79 +1,59 @@
-import streamlit as st  # ตรวจสอบให้แน่ใจว่าได้ import streamlit แล้ว
-# Custom CSS for styling
+import streamlit as st
 import time
 import requests
-
-import gspread
-from google.oauth2.service_account import Credentials
-
-# ฟังก์ชันสำหรับเชื่อมต่อกับ Google Sheets
-def connect_to_gsheet(sheet_name):
-    creds = Credentials.from_service_account_file(
-        'composite-sun-341414-4dc8ab40d923.json',  # แก้ไขให้เป็นไฟล์ JSON ของคุณ
-        scopes=["https://docs.google.com/spreadsheets/d/1lM3HfsnBFp5Dea-4imT4qAPF1Naz_8Ch4j30fcc7zFA/edit?usp=sharing"]
-    )
-    client = gspread.authorize(creds)
-    return client.open(sheet_name).sheet1  # เปิดชีตแรก
-
-# ฟังก์ชันสำหรับบันทึกข้อมูลลง Google Sheet
-def save_to_gsheet(data, worksheet):
-    worksheet.append_row(data)
-
-# ตั้งค่า Google Sheet
-SHEET_NAME = "data_user_lungcheck"  # แก้ไขให้เป็นชื่อชีตของคุณ
-worksheet = connect_to_gsheet(SHEET_NAME)
+import json  # Import json to save data
 
 
 
+import pandas as pd
+from pycaret.classification import *
 
-# ฟังก์ชันสำหรับล้างข้อมูลทั้งหมดใน session_state และกลับไปยัง step 1
+loaded_best_pipeline = load_model('my_first_pipeline')
+
+data = pd.read_csv('eiei.csv', index_col = 0)
+
+new_data = data.copy()
+new_data.drop('Restrictive defect', axis=1, inplace=True)
+
+header = new_data.columns.tolist()
+first_row = new_data.iloc[0].tolist()
+first_row_df = pd.DataFrame([new_data.iloc[0]], columns=header)
+
+predictions = predict_model(loaded_best_pipeline, data = first_row_df)
+predictions["prediction_label"]
+
+
+
+
+# Function to reset state
 def reset_state():
     for key in list(st.session_state.keys()):
         del st.session_state[key]
-    st.session_state["step"] = 1  # กลับไปที่ขั้นตอนแรก
+    st.session_state["step"] = 1  # Reset to step 1
 
-# ตรวจสอบว่า session_state มีการกำหนดค่าเริ่มต้นหรือยัง
+# Initialize session state
 if "step" not in st.session_state:
-    st.session_state["step"] = 1  # กำหนดค่าเริ่มต้นที่ step 1
-
-# กำหนดการล้างข้อมูลทั้งหมดเมื่อรีโหลดหน้าเว็บ
-if "reloaded" not in st.session_state:
-    reset_state()
-    st.session_state["reloaded"] = True
-    st.session_state["step"] == 1  # กลับมาขั้นตอนที่ 1
-
-# Initialize session state for navigation
-if "step" not in st.session_state:
-    reset_state()
     st.session_state["step"] = 1
 
-# # Function to move to the next step
+# Functions to navigate between steps
 def next_step():
     st.session_state["step"] += 1
 
-#back
 def prev_step():
     st.session_state["step"] -= 1
-
 
 # Custom CSS for styling
 page_style = """
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap');
-    
-    /* Apply Nunito font to the entire app */
     * {
         font-family: 'Nunito', sans-serif;
     }
-    
-    /* Background color and layout adjustments */
     .stApp {
         background: linear-gradient(to bottom, #ff7f50 100px, white 100px);
     }
-    
-    /* Top banner styling */
     .top-banner {
-        background-color: #ff7f50;  /* Orange color */
+        background-color: #ff7f50;
         height: 20px;
         width: 100%;
         display: flex;
@@ -83,17 +63,13 @@ page_style = """
         font-size: 24px;
         font-weight: bold;
     }
-
-    /* Main title styling */
     h1 {
         color: #ff6347;
         text-align: center;
         font-size: 34px;
         font-weight: bold;
-        padding-top: 20px;  /* Pushes the title below the banner */
+        padding-top: 20px;
     }
-    
-    /* Centering the subtitle text */
     .subtitle-text {
         text-align: center;
         font-size: 14px;
@@ -101,8 +77,6 @@ page_style = """
         margin-top: 10px;
         color: #333333;
     }
-
-    /* Button styling */
     .stButton button {
         background-color: #ff7f50;
         color: white;
@@ -115,8 +89,6 @@ page_style = """
     .stButton button:hover {
         background-color: #ff6347;
     }
-
-    /* Centering buttons for navigation */
     .centered-buttons {
         display: flex;
         justify-content: space-between;
@@ -125,9 +97,6 @@ page_style = """
     </style>
 """
 st.markdown(page_style, unsafe_allow_html=True)
-# Apply the CSSst.markdown(page_style, unsafe_allow_html=True)
-
-#st.markdown('<div class="top-banner">CRA LungCheck</div>', unsafe_allow_html=True)
 
 # Step 1 - General Information
 if st.session_state["step"] == 1:
@@ -135,40 +104,21 @@ if st.session_state["step"] == 1:
     st.markdown('<div class="subtitle-text">Please enter your information for pre-screening Restrictive defect</div>', unsafe_allow_html=True)
     st.write("****Step 1****")
     st.header("General Information")
-##แบบปุ่ม3ปุ่ม มีปุ่มว่าง ถ้าไม่กดเลือกเพศ จะบอกให้ User กด
-        # แสดงปุ่ม radio โดยให้ตัวเลือกแรกเป็นค่าว่าง
-    #gender_options = ["", "Male", "Female"]
-    #gender = st.radio("Gender", gender_options, key="gender_step1")
-    # ตรวจสอบว่าผู้ใช้เลือกเพศหรือยัง
-    #if gender:
-        #st.write(f"Gender selected: {gender}")
-    #else:
-        #st.write("Please select your gender.")
-    # แสดงตัวเลือกเพศโดยมีค่าเริ่มต้นเป็น "Select" (ค่าว่าง)
-##แบบเลือกช่องสี่เหลี่ยม
+
+    # Gender selection
     gender_options = ["Select", "Male", "Female"]
-    gender = st.selectbox("Gender", gender_options, key="gender_step1")
-
-    # ตรวจสอบว่าผู้ใช้เลือกเพศหรือยัง
-    if gender != "Select":
-        st.write(f"Gender selected: {gender}")
-    else:
-        st.write("Please select your gender.")
-
-##แบบกดเลือก 2 ปุ่ม
-    #Gender selection
-    #gender = st.radio("Gender", ["Male", "Female"], key="gender_step1")
+    st.session_state.gender_step1 = st.selectbox("Gender", gender_options, index=0)
 
     # Age input
-    age = st.number_input("Age", min_value=0, max_value=120, value=0, key="age_step1")
+    st.session_state.age_step1 = st.number_input("Age", min_value=0, max_value=120, value=0)
 
     # Weight and Height inputs
-    weight = st.number_input("Weight (kg)", min_value=0.0, max_value=300.0, value=0.0, key="weight_step1")
-    height = st.number_input("Height (cm)", min_value=0.0, max_value=250.0, value=0.0, key="height_step1")
+    st.session_state.weight_step1 = st.number_input("Weight (kg)", min_value=0.0, max_value=300.0, value=0.0)
+    st.session_state.height_step1 = st.number_input("Height (cm)", min_value=0.0, max_value=250.0, value=0.0)
 
     # Educational Level selection
     educational_levels = [
-        "No formal education (Primary level)", 
+        "No formal education (Primary level)",
         "Primary level, grade 4",
         "Primary level, Grade 6",
         "Junior high school",
@@ -176,25 +126,22 @@ if st.session_state["step"] == 1:
         "Associate degree",
         "Degree or higher"
     ]
-    education = st.selectbox("Educational Level", educational_levels, key="education_step1")
+    st.session_state.education_step1 = st.selectbox("Educational Level", educational_levels)
 
     # Status selection
-    status_options = ["Please choose","Single", "Married", "Divorced", "Separated", "Widowed"]
-    status = st.radio("Status", status_options, key="status_step1",index=0)
+    status_options = ["Please choose", "Single", "Married", "Divorced", "Separated", "Widowed"]
+    st.session_state.status_step1 = st.radio("Status", status_options, index=0)
 
-     # Validation check before proceeding to Step 2
+    # Validation check before proceeding to Step 2
     if st.button("Next"):
-        # Check if any of the required fields are missing
-        if gender == "Select" or age == 0 or weight == 0.0 or height == 0.0 or education == "" or status == "Please choose":
+        if (st.session_state.gender_step1 == "Select" or st.session_state.age_step1 == 0 or
+            st.session_state.weight_step1 == 0.0 or st.session_state.height_step1 == 0.0 or
+            st.session_state.education_step1 == "" or st.session_state.status_step1 == "Please choose"):
             st.warning("Please fill out all the fields before proceeding.")
         else:
-            # Proceed to Step 2 if all fields are completed
             next_step()
 
-
-
 # Step 2 - Risky Behavior
-# ตัวอย่างการตั้งค่าให้มี "None" หรือ "Please choose" เป็นค่าเริ่มต้นในทุกขั้นตอนของ step2
 elif st.session_state["step"] == 2:
     st.title("CRA LungCheck")
     st.markdown('<div class="subtitle-text">Please enter your information for pre-screening Restrictive defect</div>', unsafe_allow_html=True)
@@ -202,44 +149,46 @@ elif st.session_state["step"] == 2:
     st.header("Risky Behavior")
 
     # Current smoker (required)
-    current_smoker = st.radio("**Current smoker**", ["Please choose", "Yes", "No"], key="current_smoker_step2", index=0)
+    st.session_state.current_smoker_step2 = st.radio("**Current smoker**", ["Please choose", "Yes", "No"], index=0)
 
     # Display fields based on user selections
-    if current_smoker == "Yes":
-        smoked_per_day = st.number_input("Smoked per day", min_value=1, max_value=100, value=1, key="smoked_per_day_step2")
+    if st.session_state.current_smoker_step2 == "Yes":
+        st.session_state.smoked_per_day_step2 = st.number_input("Smoked per day", min_value=1, max_value=100, value=1)
+    else:
+        st.session_state.smoked_per_day_step2 = 0  # Default value if not smoking
 
     # Cigarette Type (required)
-    cigarette_type = st.radio("Cigarette Type", ["Please choose", "Never smoked", "Filtered", "Non-filtered", "Both"], key="cigarette_type_step2", index=0)
+    st.session_state.cigarette_type_step2 = st.radio("Cigarette Type", ["Please choose", "Never smoked", "Filtered", "Non-filtered", "Both"], index=0)
 
     # Lung Inhale Smoking (required)
-    lung_inhale = st.radio("Lung Inhale Smoking", ["Please choose", "Never smoked", "Inhaled deeply", "Not inhaled deeply", "Sometimes inhaled deeply"], key="lung_inhale_step2", index=0)
+    st.session_state.lung_inhale_step2 = st.radio("Lung Inhale Smoking", ["Please choose", "Never smoked", "Inhaled deeply", "Not inhaled deeply", "Sometimes inhaled deeply"], index=0)
 
     # Alcohol section (required)
-    alcohol = st.radio("**Alcohol**", ["Please choose", "Never drank before", "Used to drink but quit", "Still drinking"], key="alcohol_step2", index=0)
+    st.session_state.alcohol_step2 = st.radio("**Alcohol**", ["Please choose", "Never drank before", "Used to drink but quit", "Still drinking"], index=0)
 
     # Drinking Frequency (only if still drinking)
-    if alcohol == "Still drinking" or alcohol == "Used to drink but quit":
-        drinking_frequency = st.radio("Drinking Frequency", ["Please choose","Drink a little", "Once a week", "2-3 times a week", "4 times or more per week"], key="drinking_frequency_step2", index=0)
+    if st.session_state.alcohol_step2 == "Still drinking" or st.session_state.alcohol_step2 == "Used to drink but quit":
+        st.session_state.drinking_frequency_step2 = st.radio("Drinking Frequency", ["Please choose", "Drink a little", "Once a week", "2-3 times a week", "4 times or more per week"], index=0)
+    else:
+        st.session_state.drinking_frequency_step2 = "Not Applicable"
 
+    # Navigation buttons with validation
     col1, col2 = st.columns(2)
     with col2:
-    # Check if all required fields are filled
-        if (current_smoker != "Please choose" and cigarette_type != "Please choose" and 
-            lung_inhale != "Please choose" and alcohol != "Please choose" and 
-            (alcohol != "Still drinking" or (alcohol == "Still drinking" and drinking_frequency != "Please choose"))):
-            # Display Next button only when all fields are completed
+        if (st.session_state.current_smoker_step2 != "Please choose" and
+            st.session_state.cigarette_type_step2 != "Please choose" and
+            st.session_state.lung_inhale_step2 != "Please choose" and
+            st.session_state.alcohol_step2 != "Please choose" and
+            (st.session_state.alcohol_step2 not in ["Still drinking", "Used to drink but quit"] or
+             st.session_state.drinking_frequency_step2 != "Please choose")):
             if st.button("Next"):
                 next_step()
         else:
             st.warning("Please fill in all required information before proceeding.")
     with col1:
-    # Back button
         if st.button("Back"):
             prev_step()
-    
-    
 
- 
 # Step 3 - Working Information
 elif st.session_state["step"] == 3:
     st.title("CRA LungCheck")
@@ -251,9 +200,7 @@ elif st.session_state["step"] == 3:
     try:
         response = requests.get("https://cra-lungcheck-backend.vercel.app/data")
         response.raise_for_status()
-        data = response.json()  # Parse the JSON response
-        
-        # Get the latest PM2.5 value
+        data = response.json()
         latest_pm25 = data[0]["pm25"] if data else None
     except Exception as e:
         st.error(f"Failed to fetch dust level data: {e}")
@@ -262,43 +209,40 @@ elif st.session_state["step"] == 3:
     # Factory Name and Department
     col1, col2 = st.columns(2)
     with col1:
-        factory_name = st.selectbox(
-            "Factory Name",
-            ["Please choose", "Factory A", "Factory B", "Factory C", "Factory D", "Factory E", "Factory F"],  # Replace with actual factory names
-            key="factory_name_step3"
-        )
+        factory_names = ["Please choose", "Factory A", "Factory B", "Factory C", "Factory D", "Factory E", "Factory F"]
+        st.session_state.factory_name_step3 = st.selectbox("Factory Name", factory_names)
     with col2:
-        # Autofill the Dust Level field with the latest PM2.5 value
         if latest_pm25 is not None:
-            st.text_input("Dust Level (Fac.)", value=latest_pm25, disabled=True, key="dust_level_factory_step3")
+            st.session_state.dust_level_factory_step3 = st.text_input("Dust Level (Fac.)", value=latest_pm25, disabled=True)
         else:
             st.warning("No dust level data available. Please check the API connection.")
+            st.session_state.dust_level_factory_step3 = None
 
-    # Question with Yes/No option
-    question = st.radio("Previous Department", ["Please choose", "Yes", "No"], key="hazardous_exposure_step3", index=0)
+    # Previous Department
+    st.session_state.hazardous_exposure_step3 = st.radio("Previous Department", ["Please choose", "Yes", "No"], index=0)
 
     # Duration Working (Year and Month)
     col5, col6 = st.columns(2)
     with col5:
-        working_years = st.number_input("Duration Working - Years", min_value=0, max_value=50, value=1, key="working_years_step3")
+        st.session_state.working_years_step3 = st.number_input("Duration Working - Years", min_value=0, max_value=50, value=1)
     with col6:
-        working_months = st.number_input("Duration Working - Months", min_value=0, max_value=11, value=0, key="working_months_step3")
+        st.session_state.working_months_step3 = st.number_input("Duration Working - Months", min_value=0, max_value=11, value=0)
 
     # Additional Working Details
     col7, col8 = st.columns(2)
     with col7:
-        working_hours_per_day = st.number_input("Working hours per day", min_value=0.0, max_value=24.0, value=0.0, key="working_hours_day_step3")
+        st.session_state.working_hours_day_step3 = st.number_input("Working hours per day", min_value=0.0, max_value=24.0, value=0.0)
     with col8:
-        working_days_per_week = st.number_input("Working days per week", min_value=0, max_value=7, value=0, key="working_days_week_step3")
+        st.session_state.working_days_week_step3 = st.number_input("Working days per week", min_value=0, max_value=7, value=0)
 
     col9, col10 = st.columns(2)
     with col9:
-        ot_hours_per_week = st.number_input("OT hours per week", min_value=0.0, max_value=168.0, value=0.0, key="ot_hours_week_step3")
+        st.session_state.ot_hours_week_step3 = st.number_input("OT hours per week", min_value=0.0, max_value=168.0, value=0.0)
     with col10:
-        break_time_per_day = st.number_input("Break Time hours per day", min_value=0.0, max_value=24.0, value=0.0, key="break_time_day_step3")
+        st.session_state.break_time_day_step3 = st.number_input("Break Time hours per day", min_value=0.0, max_value=24.0, value=0.0)
 
     # Sleep Time per day
-    sleep_time_per_day = st.number_input("Sleep Time hours per day", min_value=0.0, max_value=24.0, value=0.0, key="sleep_time_day_step3")
+    st.session_state.sleep_time_day_step3 = st.number_input("Sleep Time hours per day", min_value=0.0, max_value=24.0, value=0.0)
 
     # Navigation buttons with validation
     col1, col2 = st.columns(2)
@@ -306,46 +250,56 @@ elif st.session_state["step"] == 3:
         if st.button("Back"):
             prev_step()
     with col2:
-        # Validate required fields before allowing navigation
-        if (factory_name != "Please choose" and latest_pm25 is not None and question != "Please choose" and 
-            working_years >= 0 and working_months >= 0 and
-            working_hours_per_day >= 0 and working_days_per_week > 0 and
-            ot_hours_per_week >= 0 and break_time_per_day >= 0 and 
-            sleep_time_per_day >= 0):
+        if (st.session_state.factory_name_step3 != "Please choose" and latest_pm25 is not None and
+            st.session_state.hazardous_exposure_step3 != "Please choose" and
+            st.session_state.working_years_step3 >= 0 and st.session_state.working_months_step3 >= 0 and
+            st.session_state.working_hours_day_step3 >= 0 and st.session_state.working_days_week_step3 > 0 and
+            st.session_state.ot_hours_week_step3 >= 0 and st.session_state.break_time_day_step3 >= 0 and
+            st.session_state.sleep_time_day_step3 >= 0):
             if st.button("Next"):
                 next_step()
         else:
             st.warning("Please fill in all required fields before proceeding.")
 
-#step4
+# Step 4 - Health Information
 elif st.session_state["step"] == 4:
     st.title("CRA LungCheck")
     st.markdown('<div class="subtitle-text">Please enter your information for pre-screening Restrictive defect</div>', unsafe_allow_html=True)
     st.write("****Step 4****")
     st.header("Health Information")
-    
+
     # Using st.form to avoid automatic updates on each change
     with st.form(key="health_info_form"):
         st.write("***In the past 5 years***")
-        tuberculosis = st.radio("Tuberculosis", ["Yes", "No", "Unsure"], key="tuberculosis_5years")
-        asthma = st.radio("Asthma", ["Yes", "No", "Unsure"], key="asthma_5years")
-        pulmonary_tb = st.radio("Pulmonary TB", ["Yes", "No", "Unsure"], key="pulmonary_5years")
+        st.session_state.tuberculosis_5years = st.radio("Tuberculosis", ["Yes", "No", "Unsure"])
+        st.session_state.asthma_5years = st.radio("Asthma", ["Yes", "No", "Unsure"])
+        st.session_state.pulmonary_5years = st.radio("Pulmonary TB", ["Yes", "No", "Unsure"])
 
-# Current illness section
         st.write("***Current Illness***")
-        current_illness = st.radio("Do you have any current illness? ""**(If not, please select No for the next question.)**", ["Yes", "No"], key="current_illness")
-        if current_illness == "Yes":
-            asthma_current = st.radio("Asthma", ["Yes", "No"], key="asthma_current")
-            emphysema_current = st.radio("Emphysema", ["Yes", "No"], key="emphysema_current")
-            Bronchitis_current = st.radio("Bronchitis", ["Yes","No"], key="Bronchitis_current_illness")
-            Sinusitis_current = st.radio("Sinusitis", ["Yes","No"], key="Sinusitis_current_illness")
-            InjurySurgery_current = st.radio("Injury/Surgery", ["Yes","No"], key="InjurySurgery_current_illness")
-            Allergies_current = st.radio("Allergies", ["Yes","No"], key="Allergies_current_illness")
-            Tuberculosis_current = st.radio("Tuberculosis", ["Yes","No"], key="Tuberculosis_current_illness")
-            Heart_current = st.radio("Heart Disease", ["Yes","No"], key="Heart Disease_current_illness")
-            Pneumonia_current = st.radio("Pneumonia", ["Yes","No"], key="Pneumonia_current_illness")
-            Other_current = st.radio("Other", ["Yes","No"], key="Other_current_illness")
-
+        st.session_state.current_illness = st.radio("Do you have any current illness? (If not, please select No for the next question.)", ["Yes", "No"])
+        if st.session_state.current_illness == "Yes":
+            st.session_state.asthma_current = st.radio("Asthma", ["Yes", "No"])
+            st.session_state.emphysema_current = st.radio("Emphysema", ["Yes", "No"])
+            st.session_state.bronchitis_current = st.radio("Bronchitis", ["Yes", "No"])
+            st.session_state.sinusitis_current = st.radio("Sinusitis", ["Yes", "No"])
+            st.session_state.injury_surgery_current = st.radio("Injury/Surgery", ["Yes", "No"])
+            st.session_state.allergies_current = st.radio("Allergies", ["Yes", "No"])
+            st.session_state.tuberculosis_current = st.radio("Tuberculosis", ["Yes", "No"])
+            st.session_state.heart_disease_current = st.radio("Heart Disease", ["Yes", "No"])
+            st.session_state.pneumonia_current = st.radio("Pneumonia", ["Yes", "No"])
+            st.session_state.other_current = st.radio("Other", ["Yes", "No"])
+        else:
+            # Set default values if no current illness
+            st.session_state.asthma_current = "No"
+            st.session_state.emphysema_current = "No"
+            st.session_state.bronchitis_current = "No"
+            st.session_state.sinusitis_current = "No"
+            st.session_state.injury_surgery_current = "No"
+            st.session_state.allergies_current = "No"
+            st.session_state.tuberculosis_current = "No"
+            st.session_state.heart_disease_current = "No"
+            st.session_state.pneumonia_current = "No"
+            st.session_state.other_current = "No"
 
         # Submit button inside the form
         submitted = st.form_submit_button("Submit")
@@ -360,8 +314,6 @@ elif st.session_state["step"] == 4:
 
 # Step 5 - Analysis in progress
 elif st.session_state["step"] == 5:
-    import time
-    import random  # Import random module
     # Background video setup
     background_video_url = "https://www.dropbox.com/scl/fi/64srq2nf8kx9pajncsj6s/CRA-LUNGCHECK.mp4?rlkey=5r792fexbzhr4s8nj16qe94t9&st=n0q49dq6&raw=1"
 
@@ -389,6 +341,8 @@ elif st.session_state["step"] == 5:
 
     st.markdown(page_bg_video, unsafe_allow_html=True)
 
+    import random
+
     # Initialize session state timer
     if "start_time" not in st.session_state:
         st.session_state["start_time"] = time.time()
@@ -411,7 +365,7 @@ elif st.session_state["step"] == 5:
         time.sleep(0.1)  # Short sleep to prevent rapid looping
         st.rerun()  # Force the app to rerun
 
-# Step 6 - Display Image Based on Random Value
+# Step 6 - Display Image Based on Random Value and Collect Data
 elif st.session_state["step"] == 6:
     # Retrieve the random value
     random_value = st.session_state.get("random_value", 0)  # Default to 0 if not found
@@ -448,19 +402,120 @@ elif st.session_state["step"] == 6:
             position: fixed;
             bottom: 6px;
             right: 20px;
-            z-index: 10; /* To ensure the button is above other elements */
-            color: white; /* White text color */
-            border: none; /* Remove border */
-            padding: 10px 10px; /* Button padding */
-            font-size: 16px; /* Font size */
-            border-radius: 5px; /* Rounded corners */
+            z-index: 10;
+            color: white;
+            border: none;
+            padding: 10px 10px;
+            font-size: 16px;
+            border-radius: 5px;
         }}
         </style>
     """
     st.markdown(page_bg_img, unsafe_allow_html=True)
 
-    # Navigation button to reset state (centered at the bottom)
+    # Collect all data from st.session_state into variables
+    gender = st.session_state.gender_step1
+    age = st.session_state.age_step1
+    weight = st.session_state.weight_step1
+    height = st.session_state.height_step1
+    education = st.session_state.education_step1
+    status = st.session_state.status_step1
+
+    current_smoker = st.session_state.current_smoker_step2
+    smoked_per_day = st.session_state.smoked_per_day_step2
+    cigarette_type = st.session_state.cigarette_type_step2
+    lung_inhale = st.session_state.lung_inhale_step2
+    alcohol = st.session_state.alcohol_step2
+    drinking_frequency = st.session_state.drinking_frequency_step2
+
+    factory_name = st.session_state.factory_name_step3
+    dust_level_factory = st.session_state.dust_level_factory_step3
+    hazardous_exposure = st.session_state.hazardous_exposure_step3
+    working_years = st.session_state.working_years_step3
+    working_months = st.session_state.working_months_step3
+    working_hours_per_day = st.session_state.working_hours_day_step3
+    working_days_per_week = st.session_state.working_days_week_step3
+    ot_hours_per_week = st.session_state.ot_hours_week_step3
+    break_time_per_day = st.session_state.break_time_day_step3
+    sleep_time_per_day = st.session_state.sleep_time_day_step3
+
+    tuberculosis_5years = st.session_state.tuberculosis_5years
+    asthma_5years = st.session_state.asthma_5years
+    pulmonary_5years = st.session_state.pulmonary_5years
+    current_illness = st.session_state.current_illness
+    asthma_current = st.session_state.asthma_current
+    emphysema_current = st.session_state.emphysema_current
+    bronchitis_current = st.session_state.bronchitis_current
+    sinusitis_current = st.session_state.sinusitis_current
+    injury_surgery_current = st.session_state.injury_surgery_current
+    allergies_current = st.session_state.allergies_current
+    tuberculosis_current = st.session_state.tuberculosis_current
+    heart_disease_current = st.session_state.heart_disease_current
+    pneumonia_current = st.session_state.pneumonia_current
+    other_current = st.session_state.other_current
+
+    # Create a flat dictionary to hold all the data
+    user_data = {
+        "Gender": gender,
+        "Age": age,
+        "Weight": weight,
+        "Height": height,
+        "Education": education,
+        "Status": status,
+        "Current Smoker": current_smoker,
+        "Smoked Per Day": smoked_per_day,
+        "Cigarette Type": cigarette_type,
+        "Lung Inhale Smoking": lung_inhale,
+        "Alcohol": alcohol,
+        "Drinking Frequency": drinking_frequency,
+        "Factory Name": factory_name,
+        "Dust Level (Factory)": dust_level_factory,
+        "Previous Department": hazardous_exposure,
+        "Working Years": working_years,
+        "Working Months": working_months,
+        "Working Hours per Day": working_hours_per_day,
+        "Working Days per Week": working_days_per_week,
+        "OT Hours per Week": ot_hours_per_week,
+        "Break Time per Day": break_time_per_day,
+        "Sleep Time per Day": sleep_time_per_day,
+        "Tuberculosis (Past 5 Years)": tuberculosis_5years,
+        "Asthma (Past 5 Years)": asthma_5years,
+        "Pulmonary TB (Past 5 Years)": pulmonary_5years,
+        "Current Illness": current_illness,
+        "Asthma (Current)": asthma_current,
+        "Emphysema (Current)": emphysema_current,
+        "Bronchitis (Current)": bronchitis_current,
+        "Sinusitis (Current)": sinusitis_current,
+        "Injury/Surgery (Current)": injury_surgery_current,
+        "Allergies (Current)": allergies_current,
+        "Tuberculosis (Current)": tuberculosis_current,
+        "Heart Disease (Current)": heart_disease_current,
+        "Pneumonia (Current)": pneumonia_current,
+        "Other (Current)": other_current,
+    }
+
+    # Import csv module
+    import csv
+    import os
+
+    # Define the CSV file name
+    csv_file = "user_data.csv"
+
+    # Check if file exists to determine if header is needed
+    file_exists = os.path.isfile(csv_file)
+
+    # Save the data to a CSV file
+    with open(csv_file, "a", newline='', encoding='utf-8') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=user_data.keys())
+        # Write header only if the file does not exist
+        if not file_exists:
+            writer.writeheader()
+        writer.writerow(user_data)
+
+    st.success("Your data has been saved successfully!")
+
+    # Navigation button to reset state
     if st.button("Return to Home"):
         for key in list(st.session_state.keys()):
             del st.session_state[key]
-        st.experimental_set_query_params()  # Clear query params
+        st.experimental_set_query_params()
