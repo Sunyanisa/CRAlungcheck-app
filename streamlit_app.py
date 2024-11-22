@@ -2,27 +2,9 @@ import streamlit as st
 import time
 import requests
 import json  # Import json to save data
-
-
-
 import pandas as pd
 from pycaret.classification import *
-
-loaded_best_pipeline = load_model('my_first_pipeline')
-
-data = pd.read_csv('eiei.csv', index_col = 0)
-
-new_data = data.copy()
-new_data.drop('Restrictive defect', axis=1, inplace=True)
-
-header = new_data.columns.tolist()
-first_row = new_data.iloc[0].tolist()
-first_row_df = pd.DataFrame([new_data.iloc[0]], columns=header)
-
-predictions = predict_model(loaded_best_pipeline, data = first_row_df)
-predictions["prediction_label"]
-
-
+from transform import transform_user_data
 
 
 # Function to reset state
@@ -367,18 +349,129 @@ elif st.session_state["step"] == 5:
 
 # Step 6 - Display Image Based on Random Value and Collect Data
 elif st.session_state["step"] == 6:
-    # Retrieve the random value
-    random_value = st.session_state.get("random_value", 0)  # Default to 0 if not found
+
+    import pandas as pd
+    import os
+
+    # Collect all data from st.session_state into variables
+    gender = st.session_state.get('gender_step1', '')
+    age = st.session_state.get('age_step1', '')
+    weight = st.session_state.get('weight_step1', '')
+    height = st.session_state.get('height_step1', '')
+    education = st.session_state.get('education_step1', '')
+    status = st.session_state.get('status_step1', '')
+
+    current_smoker = st.session_state.get('current_smoker_step2', '')
+    smoked_per_day = st.session_state.get('smoked_per_day_step2', '')
+    cigarette_type = st.session_state.get('cigarette_type_step2', '')
+    lung_inhale = st.session_state.get('lung_inhale_step2', '')
+    alcohol = st.session_state.get('alcohol_step2', '')
+    drinking_frequency = st.session_state.get('drinking_frequency_step2', '')
+
+    factory_name = st.session_state.get('factory_name_step3', '')
+    dust_level_factory = st.session_state.get('dust_level_factory_step3', '')
+    hazardous_exposure = st.session_state.get('hazardous_exposure_step3', '')
+    working_years = st.session_state.get('working_years_step3', '')
+    working_months = st.session_state.get('working_months_step3', '')
+    working_hours_per_day = st.session_state.get('working_hours_day_step3', '')
+    working_days_per_week = st.session_state.get('working_days_week_step3', '')
+    ot_hours_per_week = st.session_state.get('ot_hours_week_step3', '')
+    break_time_per_day = st.session_state.get('break_time_day_step3', '')
+    sleep_time_per_day = st.session_state.get('sleep_time_day_step3', '')
+
+    tuberculosis_5years = st.session_state.get('tuberculosis_5years', '')
+    asthma_5years = st.session_state.get('asthma_5years', '')
+    pulmonary_5years = st.session_state.get('pulmonary_5years', '')
+    current_illness = st.session_state.get('current_illness', '')
+
+    # For current illnesses, check if they exist in session_state
+    asthma_current = st.session_state.get('asthma_current', '')
+    emphysema_current = st.session_state.get('emphysema_current', '')
+    bronchitis_current = st.session_state.get('bronchitis_current_illness', '')
+    sinusitis_current = st.session_state.get('sinusitis_current_illness', '')
+    injury_surgery_current = st.session_state.get('injury_surgery_current_illness', '')
+    allergies_current = st.session_state.get('allergies_current_illness', '')
+    tuberculosis_current = st.session_state.get('tuberculosis_current_illness', '')
+    heart_disease_current = st.session_state.get('heart_current_illness', '')
+    pneumonia_current = st.session_state.get('pneumonia_current_illness', '')
+    other_current = st.session_state.get('other_current_illness', '')
+
+    # Create a flat dictionary to hold all the data
+    user_data = {
+        "Sex": gender,
+        "Age_group": age,
+        "weight": weight,
+        "height": height,
+        "Education": education,
+        "Marital_status": status,
+        # "Smoking_current": current_smoker,
+        "Smoking_per_day": smoked_per_day,
+        "Smoking_type": cigarette_type,
+        # "Lung Inhale Smoking": lung_inhale,
+        # "Drink_history": alcohol,
+        "Drink_times": drinking_frequency,
+        "Factory_number": factory_name,
+        "Dust_level_mean": dust_level_factory,
+        "Previous_sector_history": hazardous_exposure,
+        # "Working Years": working_years,
+        "Work_months": working_months,
+        "Average_work_hour_per_day": working_hours_per_day,
+        "Working_day_per_week": working_days_per_week,
+        "OT_hour_per_week": ot_hours_per_week,
+        "Break_hour_per_day": break_time_per_day,
+        "Sleep_hour_per_day": sleep_time_per_day,
+        "TB_history": tuberculosis_5years,
+        "Asthma_history": asthma_5years,
+        "Other_chest_disease": pulmonary_5years,
+        "Prevalence_disease": current_illness,
+        "Asthma": asthma_current,
+        "Emphysema": emphysema_current,
+        # "Bronchitis": bronchitis_current,
+        "Sinusitis": sinusitis_current,
+        "Injury or surgery in the thorax": injury_surgery_current,
+        "Allergy": allergies_current,
+        "TB": tuberculosis_current,
+        "Heart disease": heart_disease_current,
+        "Pneumonia": pneumonia_current,
+        "Other lung disease": other_current,
+    }
+
+
+    # Convert the user_data dictionary into a DataFrame
+    user_df = pd.DataFrame([user_data])
+
+    loaded_best_pipeline = load_model('best')
+
+    # user_df = pd.read_csv('user_data.csv')
+    reference_df = pd.read_csv('df_select.csv')
+
+    # Transform the data
+    transformed_df = transform_user_data(user_df, reference_df)
+
+    predictions = predict_model(loaded_best_pipeline, data = transformed_df)
+    result = predictions["prediction_label"].values[0]
+
+    # Define the CSV file name
+    csv_file = "user_data.csv"
+
+    # Check if the CSV file exists
+    if os.path.isfile(csv_file):
+        # If it exists, append without writing the header
+        user_df.to_csv(csv_file, mode='a', header=False, index=False)
+    else:
+        # If it does not exist, write the data with the header
+        user_df.to_csv(csv_file, mode='w', header=True, index=False)
+
 
     # Define image URLs based on the random value
     image_urls = {
-        0: "https://www.dropbox.com/scl/fi/pomdtvnlzsuacmzmce75m/Normal.png?rlkey=5cqznzleogpusgc30lyp6qdmc&st=ghxcowil&raw=1",
-        1: "https://www.dropbox.com/scl/fi/3keh11prpokpytv9s1a06/Mild.png?rlkey=qxnlunz5yc2h01miwieq0wgro&st=5755o5l2&raw=1",
-        2: "https://www.dropbox.com/scl/fi/g18t6ujd2sbv63rqn3xz0/High.png?rlkey=4l8118z19hqo6wvyl95uyqtc0&st=yjbld74w&raw=1",
+        1: "https://www.dropbox.com/scl/fi/pomdtvnlzsuacmzmce75m/Normal.png?rlkey=5cqznzleogpusgc30lyp6qdmc&st=ghxcowil&raw=1",
+        2: "https://www.dropbox.com/scl/fi/3keh11prpokpytv9s1a06/Mild.png?rlkey=qxnlunz5yc2h01miwieq0wgro&st=5755o5l2&raw=1",
+        3: "https://www.dropbox.com/scl/fi/g18t6ujd2sbv63rqn3xz0/High.png?rlkey=4l8118z19hqo6wvyl95uyqtc0&st=yjbld74w&raw=1",
     }
 
     # Get the background image URL based on the random value
-    background_image_url2 = image_urls.get(random_value, image_urls[0])
+    background_image_url2 = image_urls[result]
 
     # Apply background image
     page_bg_img = f"""
@@ -413,106 +506,6 @@ elif st.session_state["step"] == 6:
     """
     st.markdown(page_bg_img, unsafe_allow_html=True)
 
-    # Collect all data from st.session_state into variables
-    gender = st.session_state.gender_step1
-    age = st.session_state.age_step1
-    weight = st.session_state.weight_step1
-    height = st.session_state.height_step1
-    education = st.session_state.education_step1
-    status = st.session_state.status_step1
-
-    current_smoker = st.session_state.current_smoker_step2
-    smoked_per_day = st.session_state.smoked_per_day_step2
-    cigarette_type = st.session_state.cigarette_type_step2
-    lung_inhale = st.session_state.lung_inhale_step2
-    alcohol = st.session_state.alcohol_step2
-    drinking_frequency = st.session_state.drinking_frequency_step2
-
-    factory_name = st.session_state.factory_name_step3
-    dust_level_factory = st.session_state.dust_level_factory_step3
-    hazardous_exposure = st.session_state.hazardous_exposure_step3
-    working_years = st.session_state.working_years_step3
-    working_months = st.session_state.working_months_step3
-    working_hours_per_day = st.session_state.working_hours_day_step3
-    working_days_per_week = st.session_state.working_days_week_step3
-    ot_hours_per_week = st.session_state.ot_hours_week_step3
-    break_time_per_day = st.session_state.break_time_day_step3
-    sleep_time_per_day = st.session_state.sleep_time_day_step3
-
-    tuberculosis_5years = st.session_state.tuberculosis_5years
-    asthma_5years = st.session_state.asthma_5years
-    pulmonary_5years = st.session_state.pulmonary_5years
-    current_illness = st.session_state.current_illness
-    asthma_current = st.session_state.asthma_current
-    emphysema_current = st.session_state.emphysema_current
-    bronchitis_current = st.session_state.bronchitis_current
-    sinusitis_current = st.session_state.sinusitis_current
-    injury_surgery_current = st.session_state.injury_surgery_current
-    allergies_current = st.session_state.allergies_current
-    tuberculosis_current = st.session_state.tuberculosis_current
-    heart_disease_current = st.session_state.heart_disease_current
-    pneumonia_current = st.session_state.pneumonia_current
-    other_current = st.session_state.other_current
-
-    # Create a flat dictionary to hold all the data
-    user_data = {
-        "Gender": gender,
-        "Age": age,
-        "Weight": weight,
-        "Height": height,
-        "Education": education,
-        "Status": status,
-        "Current Smoker": current_smoker,
-        "Smoked Per Day": smoked_per_day,
-        "Cigarette Type": cigarette_type,
-        "Lung Inhale Smoking": lung_inhale,
-        "Alcohol": alcohol,
-        "Drinking Frequency": drinking_frequency,
-        "Factory Name": factory_name,
-        "Dust Level (Factory)": dust_level_factory,
-        "Previous Department": hazardous_exposure,
-        "Working Years": working_years,
-        "Working Months": working_months,
-        "Working Hours per Day": working_hours_per_day,
-        "Working Days per Week": working_days_per_week,
-        "OT Hours per Week": ot_hours_per_week,
-        "Break Time per Day": break_time_per_day,
-        "Sleep Time per Day": sleep_time_per_day,
-        "Tuberculosis (Past 5 Years)": tuberculosis_5years,
-        "Asthma (Past 5 Years)": asthma_5years,
-        "Pulmonary TB (Past 5 Years)": pulmonary_5years,
-        "Current Illness": current_illness,
-        "Asthma (Current)": asthma_current,
-        "Emphysema (Current)": emphysema_current,
-        "Bronchitis (Current)": bronchitis_current,
-        "Sinusitis (Current)": sinusitis_current,
-        "Injury/Surgery (Current)": injury_surgery_current,
-        "Allergies (Current)": allergies_current,
-        "Tuberculosis (Current)": tuberculosis_current,
-        "Heart Disease (Current)": heart_disease_current,
-        "Pneumonia (Current)": pneumonia_current,
-        "Other (Current)": other_current,
-    }
-
-    # Import csv module
-    import csv
-    import os
-
-    # Define the CSV file name
-    csv_file = "user_data.csv"
-
-    # Check if file exists to determine if header is needed
-    file_exists = os.path.isfile(csv_file)
-
-    # Save the data to a CSV file
-    with open(csv_file, "a", newline='', encoding='utf-8') as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=user_data.keys())
-        # Write header only if the file does not exist
-        if not file_exists:
-            writer.writeheader()
-        writer.writerow(user_data)
-
-    st.success("Your data has been saved successfully!")
 
     # Navigation button to reset state
     if st.button("Return to Home"):

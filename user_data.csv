@@ -1,3 +1,14 @@
-Gender,Age,Weight,Height,Education,Status,Current Smoker,Smoked Per Day,Cigarette Type,Lung Inhale Smoking,Alcohol,Drinking Frequency,Factory Name,Dust Level (Factory),Previous Department,Working Years,Working Months,Working Hours per Day,Working Days per Week,OT Hours per Week,Break Time per Day,Sleep Time per Day,Tuberculosis (Past 5 Years),Asthma (Past 5 Years),Pulmonary TB (Past 5 Years),Current Illness,Asthma (Current),Emphysema (Current),Bronchitis (Current),Sinusitis (Current),Injury/Surgery (Current),Allergies (Current),Tuberculosis (Current),Heart Disease (Current),Pneumonia (Current),Other (Current)
-Male,1,0.01,0.01,High school equivalent,Single,No,0,Non-filtered,Not inhaled deeply,Still drinking,2-3 times a week,Factory B,10.8,No,1,1,0.01,1,0.01,0.01,0.01,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes
-Male,1,0.01,0.01,High school equivalent,Single,No,0,Non-filtered,Not inhaled deeply,Still drinking,2-3 times a week,Factory B,10.8,No,1,1,0.01,1,0.01,0.01,0.01,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Yes
+Sex,Age_group,weight,height,Education,Marital_status,Smoking_per_day,Smoking_type,Drink_times,Factory_number,Dust_level_mean,Previous_sector_history,Work_months,Average_work_hour_per_day,Working_day_per_week,OT_hour_per_week,Break_hour_per_day,Sleep_hour_per_day,TB_history,Asthma_history,Other_chest_disease,Prevalence_disease,Asthma,Emphysema,Sinusitis,Injury or surgery in the thorax,Allergy,TB,Heart disease,Pneumonia,Other lung disease
+Male,1,0.01,0.01,"Primary level, Grade 6",Separated,0,Non-filtered,Not Applicable,Factory B,10.28,No,1,0.01,1,0.0,0.0,0.0,Yes,Yes,Yes,Yes,Yes,Yes,,,,,,,
+Male,1,0.01,0.01,"Primary level, Grade 6",Separated,0,Non-filtered,Not Applicable,Factory B,10.28,No,1,0.01,1,0.0,0.0,0.0,Yes,Yes,Yes,Yes,Yes,Yes,,,,,,,
+Male,1,0.01,0.01,Degree or higher,Separated,0,Non-filtered,Not Applicable,Factory A,9.73,No,1,0.01,1,0.01,0.01,0.0,Yes,Yes,Yes,Yes,Yes,Yes,,,,,,,
+Male,1,0.01,0.01,Degree or higher,Separated,0,Non-filtered,Not Applicable,Factory A,9.73,No,1,0.01,1,0.01,0.01,0.0,Yes,Yes,Yes,Yes,Yes,Yes,,,,,,,
+Male,1,0.01,0.01,Degree or higher,Divorced,0,Filtered,Once a week,Factory C,8.87,No,1,0.01,1,0.0,0.0,0.0,Yes,Yes,Yes,Yes,Yes,Yes,,,,,,,
+Male,1,0.01,0.01,Degree or higher,Divorced,0,Filtered,Once a week,Factory C,8.87,No,1,0.01,1,0.0,0.0,0.0,Yes,Yes,Yes,Yes,Yes,Yes,,,,,,,
+Male,1,0.01,0.01,Associate degree,Widowed,0,Filtered,4 times or more per week,Factory C,7.51,No,1,0.01,1,0.01,0.01,0.0,Yes,Yes,Yes,Yes,Yes,Yes,,,,,,,
+Male,1,0.01,0.01,Associate degree,Widowed,0,Filtered,4 times or more per week,Factory C,7.51,No,1,0.01,1,0.01,0.01,0.0,Yes,Yes,Yes,Yes,Yes,Yes,,,,,,,
+Female,1,0.01,0.01,Junior high school,Divorced,0,Non-filtered,Once a week,Factory C,8.52,No,1,0.01,1,0.0,0.0,0.0,Yes,Yes,Yes,Yes,Yes,Yes,,,,,,,
+Female,1,0.01,0.01,"Primary level, Grade 6",Married,0,Non-filtered,Not Applicable,Factory C,11.93,No,1,0.01,1,0.01,0.01,0.01,Unsure,Unsure,Unsure,No,No,No,,,,,,,
+Female,1,0.01,0.01,"Primary level, Grade 6",Married,0,Non-filtered,Not Applicable,Factory C,11.93,No,1,0.01,1,0.01,0.01,0.01,Unsure,Unsure,Unsure,No,No,No,,,,,,,
+Male,1,0.01,0.01,Junior high school,Married,0,Non-filtered,2-3 times a week,Factory C,12.09,No,0,0.01,1,0.01,0.0,0.0,Yes,Yes,Yes,Yes,Yes,Yes,,,,,,,
+Male,1,0.01,0.01,Junior high school,Married,0,Non-filtered,2-3 times a week,Factory C,12.09,No,0,0.01,1,0.01,0.0,0.0,Yes,Yes,Yes,Yes,Yes,Yes,,,,,,,
