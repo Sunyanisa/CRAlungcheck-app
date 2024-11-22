@@ -3,6 +3,29 @@ import streamlit as st  # ตรวจสอบให้แน่ใจว่า
 import time
 import requests
 
+import gspread
+from google.oauth2.service_account import Credentials
+
+# ฟังก์ชันสำหรับเชื่อมต่อกับ Google Sheets
+def connect_to_gsheet(sheet_name):
+    creds = Credentials.from_service_account_file(
+        'composite-sun-341414-4dc8ab40d923.json',  # แก้ไขให้เป็นไฟล์ JSON ของคุณ
+        scopes=["https://docs.google.com/spreadsheets/d/1lM3HfsnBFp5Dea-4imT4qAPF1Naz_8Ch4j30fcc7zFA/edit?usp=sharing"]
+    )
+    client = gspread.authorize(creds)
+    return client.open(sheet_name).sheet1  # เปิดชีตแรก
+
+# ฟังก์ชันสำหรับบันทึกข้อมูลลง Google Sheet
+def save_to_gsheet(data, worksheet):
+    worksheet.append_row(data)
+
+# ตั้งค่า Google Sheet
+SHEET_NAME = "data_user_lungcheck"  # แก้ไขให้เป็นชื่อชีตของคุณ
+worksheet = connect_to_gsheet(SHEET_NAME)
+
+
+
+
 # ฟังก์ชันสำหรับล้างข้อมูลทั้งหมดใน session_state และกลับไปยัง step 1
 def reset_state():
     for key in list(st.session_state.keys()):
