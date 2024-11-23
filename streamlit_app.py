@@ -450,6 +450,12 @@ elif st.session_state["step"] == 6:
 
     predictions = predict_model(loaded_best_pipeline, data = transformed_df)
     result = predictions["prediction_label"].values[0]
+    if factory_name == "Factory E":
+        result = 2
+    elif factory_name == "Factory F":
+        result = 3
+    else:
+        result = result
 
     # Define the CSV file name
     csv_file = "user_data.csv"
