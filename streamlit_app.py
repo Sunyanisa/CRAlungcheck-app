@@ -486,6 +486,33 @@ elif st.session_state["step"] == 6:
         st.image("2.jpg")
     else:
         st.image("3.jpg")
+
+     # Apply background image
+    page_bg_img = f"""
+        <style>
+        .return-button {{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+        }}
+        .stButton {{
+            position: fixed;
+            bottom: 6px;
+            right: 20px;
+            z-index: 10;
+            color: white;
+            border: none;
+            padding: 10px 10px;
+            font-size: 16px;
+            border-radius: 5px;
+        }}
+        </style>
+    """
+    st.markdown(page_bg_img, unsafe_allow_html=True)
+    
     
     
 
