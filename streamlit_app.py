@@ -488,7 +488,7 @@ elif st.session_state["step"] == 6:
         st.image("1.jpg")
     elif result == 2:
         st.image("2.jpg")
-    else result == 3:
+    else:
         st.image("3.jpg")
     
     # Apply background image
