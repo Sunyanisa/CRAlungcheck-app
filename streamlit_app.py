@@ -24,7 +24,6 @@ def next_step():
 def prev_step():
     st.session_state["step"] -= 1
 
-# Custom CSS for styling
 page_style = """
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap');
@@ -32,7 +31,11 @@ page_style = """
         font-family: 'Nunito', sans-serif;
     }
     .stApp {
-        background: linear-gradient(to bottom, #ff7f50 100px, white 100px);
+        background-image: url('https://www.dropbox.com/scl/fi/fxzcyr68fl94b2x0xx8c2/CRA-LUNGCHECK.jpg?rlkey=xr3zhc2nrzevcd0jp6no4y31x&raw=1');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-attachment: fixed;
     }
     .top-banner {
         background-color: #ff7f50;
