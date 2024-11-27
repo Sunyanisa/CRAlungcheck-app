@@ -24,7 +24,6 @@ def next_step():
 def prev_step():
     st.session_state["step"] -= 1
 
-# Custom CSS for styling
 page_style = """
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap');
@@ -32,7 +31,11 @@ page_style = """
         font-family: 'Nunito', sans-serif;
     }
     .stApp {
-        background: linear-gradient(to bottom, #ff7f50 100px, white 100px);
+        background-image: url('https://www.dropbox.com/scl/fi/fxzcyr68fl94b2x0xx8c2/CRA-LUNGCHECK.jpg?rlkey=xr3zhc2nrzevcd0jp6no4y31x&raw=1');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-attachment: fixed;
     }
     .top-banner {
         background-color: #ff7f50;
@@ -480,9 +483,9 @@ elif st.session_state["step"] == 6:
 
     # Define image URLs based on the random value
     image_urls = {
-        1: "https://www.dropbox.com/scl/fi/pomdtvnlzsuacmzmce75m/Normal.png?rlkey=5cqznzleogpusgc30lyp6qdmc&st=ghxcowil&raw=1",
-        2: "https://www.dropbox.com/scl/fi/3keh11prpokpytv9s1a06/Mild.png?rlkey=qxnlunz5yc2h01miwieq0wgro&st=5755o5l2&raw=1",
-        3: "https://www.dropbox.com/scl/fi/g18t6ujd2sbv63rqn3xz0/High.png?rlkey=4l8118z19hqo6wvyl95uyqtc0&st=yjbld74w&raw=1",
+        1: "https://www.dropbox.com/scl/fi/hzkjnb7hbb1ew29mpthy7/1.jpg?rlkey=42emlra7if9vs2iyyuq0f2bmq&st=9lg1d69b&raw=1",
+        2: "https://www.dropbox.com/scl/fi/lktjr3y1htanhk1nltwua/2.jpg?rlkey=v6f8wu0sxqycwz4kmvn7djcrh&st=egsp67bq&raw=1",
+        3: "https://www.dropbox.com/scl/fi/6bqnrpo2i9dorr1g421jt/3.jpg?rlkey=klzhnum2gez44jpgkn7ttbvfw&st=qjng0ig4&raw=1",
     }
 
     # Get the background image URL based on the random value
