@@ -479,10 +479,6 @@ elif st.session_state["step"] == 6:
     else:
         # If it does not exist, write the data with the header
         user_df.to_csv(csv_file, mode='w', header=True, index=False)
-
-
-    # Get the background image URL based on the random value
-    background_image_url2 = image_urls[result]
     
     if result == 1:
         st.image("1.jpg")
