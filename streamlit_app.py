@@ -490,7 +490,8 @@ elif st.session_state["step"] == 6:
 
     # Get the background image URL based on the random value
     background_image_url2 = image_urls[result]
-
+    if result == 1:
+        st.image("Nor.jpg")
     # Apply background image
     page_bg_img = f"""
         <style>
