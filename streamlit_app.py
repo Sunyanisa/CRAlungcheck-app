@@ -178,26 +178,32 @@ elif st.session_state["step"] == 3:
     st.write("****Step 3****")
     st.header("Working Information")
 
-    # Fetch data from the API
-    try:
-        response = requests.get("https://cra-lungcheck-backend.vercel.app/data")
-        response.raise_for_status()
-        data = response.json()
-        latest_pm25 = data[0]["pm25"] if data else None
-    except Exception as e:
-        st.error(f"Failed to fetch dust level data: {e}")
-        latest_pm25 = None
+    # Manual data mapping for pm25 levels by factory
+    factory_pm25_map = {
+        "Hard Board Wood Factory": 1.81,
+        "Compreg timbers Wood Factory": 2.89,
+        "Impreg timbers Wood Factory": 3.53,
+        "HDF Wood Factory": 3.73,
+        "Plywood Factory": 6.73,
+        "Veneers Wood Factory": 9.66
+    }
 
     # Factory Name and Department
     col1, col2 = st.columns(2)
     with col1:
-        factory_names = ["Please choose", "Factory A", "Factory B", "Factory C", "Factory D", "Factory E", "Factory F"]
+        factory_names = ["Please choose"] + list(factory_pm25_map.keys())
         st.session_state.factory_name_step3 = st.selectbox("Factory Name", factory_names)
+    
     with col2:
-        if latest_pm25 is not None:
-            st.session_state.dust_level_factory_step3 = st.text_input("Dust Level (Fac.)", value=latest_pm25, disabled=True)
+        if st.session_state.factory_name_step3 != "Please choose":
+            selected_factory = st.session_state.factory_name_step3
+            st.session_state.dust_level_factory_step3 = st.text_input(
+                "Dust Level (Fac.)", 
+                value=factory_pm25_map.get(selected_factory, "N/A"), 
+                disabled=True
+            )
         else:
-            st.warning("No dust level data available. Please check the API connection.")
+            st.warning("Please select a factory to display dust level data.")
             st.session_state.dust_level_factory_step3 = None
 
     # Previous Department
@@ -232,7 +238,8 @@ elif st.session_state["step"] == 3:
         if st.button("Back"):
             prev_step()
     with col2:
-        if (st.session_state.factory_name_step3 != "Please choose" and latest_pm25 is not None and
+        if (st.session_state.factory_name_step3 != "Please choose" and
+            st.session_state.dust_level_factory_step3 is not None and
             st.session_state.hazardous_exposure_step3 != "Please choose" and
             st.session_state.working_years_step3 >= 0 and st.session_state.working_months_step3 >= 0 and
             st.session_state.working_hours_day_step3 >= 0 and st.session_state.working_days_week_step3 > 0 and
@@ -242,6 +249,7 @@ elif st.session_state["step"] == 3:
                 next_step()
         else:
             st.warning("Please fill in all required fields before proceeding.")
+
 
 # Step 4 - Health Information
 elif st.session_state["step"] == 4:
@@ -450,12 +458,13 @@ elif st.session_state["step"] == 6:
 
     predictions = predict_model(loaded_best_pipeline, data = transformed_df)
     result = predictions["prediction_label"].values[0]
-    if factory_name == "Factory E":
+    if factory_name == "Plywood Factory":
         result = 2
-    elif factory_name == "Factory F":
+    elif factory_name == "Veneers Wood Factory":
         result = 3
     else:
         result = result
+
 
     # Define the CSV file name
     csv_file = "user_data.csv"
