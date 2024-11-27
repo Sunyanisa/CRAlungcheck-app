@@ -481,17 +481,16 @@ elif st.session_state["step"] == 6:
         user_df.to_csv(csv_file, mode='w', header=True, index=False)
 
 
-    # Define image URLs based on the random value
-    image_urls = {
-        1: "https://www.dropbox.com/scl/fi/hzkjnb7hbb1ew29mpthy7/1.jpg?rlkey=42emlra7if9vs2iyyuq0f2bmq&st=9lg1d69b&raw=1",
-        2: "https://www.dropbox.com/scl/fi/lktjr3y1htanhk1nltwua/2.jpg?rlkey=v6f8wu0sxqycwz4kmvn7djcrh&st=egsp67bq&raw=1",
-        3: "https://www.dropbox.com/scl/fi/6bqnrpo2i9dorr1g421jt/3.jpg?rlkey=klzhnum2gez44jpgkn7ttbvfw&st=qjng0ig4&raw=1",
-    }
-
     # Get the background image URL based on the random value
     background_image_url2 = image_urls[result]
+    
     if result == 1:
-        st.image("Nor.jpg")
+        st.image("1.jpg")
+    elif result == 2:
+        st.image("2.jpg")
+    else result == 3:
+        st.image("3.jpg")
+    
     # Apply background image
     page_bg_img = f"""
         <style>
