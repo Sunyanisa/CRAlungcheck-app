@@ -487,38 +487,7 @@ elif st.session_state["step"] == 6:
     else:
         st.image("3.jpg")
     
-    # Apply background image
-    page_bg_img = f"""
-        <style>
-        .stApp {{
-            background-image: url("{background_image_url2}");
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
-            background-attachment: fixed;
-        }}
-        .return-button {{
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: absolute;
-            bottom: 10px;
-            width: 100%;
-        }}
-        .stButton {{
-            position: fixed;
-            bottom: 6px;
-            right: 20px;
-            z-index: 10;
-            color: white;
-            border: none;
-            padding: 10px 10px;
-            font-size: 16px;
-            border-radius: 5px;
-        }}
-        </style>
-    """
-    st.markdown(page_bg_img, unsafe_allow_html=True)
+    
 
 
     # Navigation button to reset state
