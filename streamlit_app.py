@@ -210,7 +210,7 @@ elif st.session_state["step"] == 3:
             st.session_state.dust_level_factory_step3 = None
 
     # Previous Department
-    st.session_state.hazardous_exposure_step3 = st.radio("Previous Department", ["Please choose", "Yes", "No"], index=0)
+    st.session_state.hazardous_exposure_step3 = st.radio("Have you been worked in the wood factory?", ["Please choose", "Yes", "No"], index=0)
 
     # Duration Working (Year and Month)
     col5, col6 = st.columns(2)
