@@ -471,9 +471,9 @@ elif st.session_state["step"] == 6:
 
     # Define image URLs based on the random value
     image_urls = {
-        1: "https://www.dropbox.com/scl/fi/pomdtvnlzsuacmzmce75m/Normal.png?rlkey=5cqznzleogpusgc30lyp6qdmc&st=ghxcowil&raw=1",
-        2: "https://www.dropbox.com/scl/fi/3keh11prpokpytv9s1a06/Mild.png?rlkey=qxnlunz5yc2h01miwieq0wgro&st=5755o5l2&raw=1",
-        3: "https://www.dropbox.com/scl/fi/g18t6ujd2sbv63rqn3xz0/High.png?rlkey=4l8118z19hqo6wvyl95uyqtc0&st=yjbld74w&raw=1",
+        1: "https://www.dropbox.com/scl/fi/hzkjnb7hbb1ew29mpthy7/1.jpg?rlkey=42emlra7if9vs2iyyuq0f2bmq&st=9lg1d69b&raw=1",
+        2: "https://www.dropbox.com/scl/fi/lktjr3y1htanhk1nltwua/2.jpg?rlkey=v6f8wu0sxqycwz4kmvn7djcrh&st=egsp67bq&raw=1",
+        3: "https://www.dropbox.com/scl/fi/6bqnrpo2i9dorr1g421jt/3.jpg?rlkey=klzhnum2gez44jpgkn7ttbvfw&st=qjng0ig4&raw=1",
     }
 
     # Get the background image URL based on the random value
